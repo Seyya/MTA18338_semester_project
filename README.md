@@ -1,2 +1,2 @@
-# MTA18338_semester_project
-This be our project
+# MTA18338 semester project
+This could be our project for P3
