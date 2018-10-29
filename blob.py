@@ -17,7 +17,7 @@ while True:
     th = cv2.adaptiveThreshold(cimg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 75, 1)
     # th = cv2.Canny(cimg, 50, 100)
 
-    # Set up the detector with default parameters.
+    # Set up the detector with parameters.
     params = cv2.SimpleBlobDetector_Params()
     params.filterByArea = True
     params.minArea = 500
