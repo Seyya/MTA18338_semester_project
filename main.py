@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # not necessary, just comment out
-cv2.imshow('Map', cv2.imread('farmhouse-ground-floor.jpg'))
+# cv2.imshow('Map', cv2.imread('farmhouse-ground-floor.jpg'))
 
 # if set to 0 = laptop webcam, 1 = camera
 cap = cv2.VideoCapture(1)
@@ -27,6 +27,8 @@ while True:
 
     # Detect blobs.
     keypoints = detector.detect(th)
+    # circlecenterx = keypoints[0].pt[0]
+    # circlecentery = keypoints[0].pt[1]
 
     # Draw detected blobs as red circles.
     # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
