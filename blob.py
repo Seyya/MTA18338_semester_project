@@ -5,7 +5,7 @@ import numpy as np
 # cv2.imshow('Map', cv2.imread('farmhouse-ground-floor.jpg'))
 
 # if set to 0 = laptop webcam, 1 = camera
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 while True:
 
