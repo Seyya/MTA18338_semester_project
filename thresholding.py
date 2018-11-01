@@ -89,15 +89,11 @@ def rgb2greyOpenCV2video():
 
     return gray2
 
-a = np.zeros((2,2))
-b = np.matrix([[0,3],[0,0]])
+
 while True:
     ret, frame = cap.read()
     H = frame.shape[0]
     W = frame.shape[1]
-
-    print("test", np.array_equal(a, b))
-
 
     #gray = rgb2grey2video()
     binary = binary_threshold2video()
