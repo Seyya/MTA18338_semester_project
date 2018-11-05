@@ -105,19 +105,6 @@ while playing:
                     if cp.pos == (0, 0):  # why is blue never true
                         cp.pos = (q, p)
                         continue
-                    # playertokens = sort_p(playertokens)
-                    test = 0
-                    for token in playertokens:
-                        #            if token.pos[0] == q and token.pos[1] == p:
-                        #                test += 1
-
-                        if token.pos[0] - 5 <= q <= token.pos[0] + 5 and token.pos[1] - 5 <= p <= token.pos[1] + 5:
-                            print(str(token.pos) + " == " + str((q, p)))
-                            test += 1
-                    if test > 1:
-                        print("More than one player moved. Plz fix")
-                    elif test != 0:
-                        token.pos = (q, p)
 
                     #
                     # ddd = dd + 1
@@ -163,6 +150,19 @@ while playing:
         text = str(cp.name) + " " + str(cp.pos)
         cv2.circle(frame, cp.pos, 5, cp.colour, -1)
         cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+    ml = 0  # movement limiter
+    if movement_detected is False and playertokens[len(playertokens) - 1].pos != (0, 0):
+        for token in playertokens:
+            for f in fonts:  # go through every token and position
+                if (token.pos[0] - 5 <= f[0] <= token.pos[0] + 5 and token.pos[1] - 5 <= f[1] <= token.pos[1]) is False:
+                    # if token pos was not found amongst the f in fonts, it has moved, so put token.pos = f.
+                    # however everyone will be wrong in at least 2 of the comparisons (they can only have one pos)
+                    # so find a way to count their mistakes? if 3 = you moved gratz, now which f is not taken?
+                    # take out the f values that have been "taken" by another token?
+                    # if wrong save temp data, if right eventually, delete temp data and replace with correct placement
+                    # if all are wrong, use temp data? but how do you know which of the 3 temp data to use?
+                    # make yet another array, copied from fonts, remove values as they are "taken" and let the last one standing be the one given to the mover
+                    print("jew")  # profit
 
     # Display frame
     #  cv2.imshow('Thrash', thresh)
