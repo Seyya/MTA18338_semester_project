@@ -102,37 +102,43 @@ while playing:
             cp = playertokens[dd]
             if len(donts) == len(playertokens):
                 if movement_detected is False:
-                    if cp.pos == (0, 0):
+                    if cp.pos == (0, 0):  # why is blue never true
                         cp.pos = (q, p)
-                        print(cp.name)
-                        print(cp.pos)
-                        print((q, p))
                         continue
-                    playertokens = sort_p(playertokens)
-                    print(cp.name)
-                    print(cp.pos)
-                    print((q, p))
-                    print("")
+                    # playertokens = sort_p(playertokens)
+                    test = 0
+                    for token in playertokens:
+                        #            if token.pos[0] == q and token.pos[1] == p:
+                        #                test += 1
 
-                    ddd = dd + 1
-                    dddd = dd + 2
-                    if ddd >= 3:
-                        ddd = 0
-                    if dddd >= 3:
-                        dddd = 0
-                    elif dddd >= 4:
-                        dddd = 1
+                        if token.pos[0] - 5 <= q <= token.pos[0] + 5 and token.pos[1] - 5 <= p <= token.pos[1] + 5:
+                            print(str(token.pos) + " == " + str((q, p)))
+                            test += 1
+                    if test > 1:
+                        print("More than one player moved. Plz fix")
+                    elif test != 0:
+                        token.pos = (q, p)
 
-                    if cp.pos != (q, p) and (
-                            playertokens[ddd] != (q, p) or playertokens[dddd] != (q, p)):  # if change detected
-                        if fonts[ddd] == cp.pos:
-                            cp.pos = fonts[ddd]
-                        elif fonts[dddd] == cp.pos:
-                            cp.pos = fonts[dddd]
-                        else:
-                            cp.pos = (q, p)
-                        continue
-                    # cp.pos = (q, p)
+                    #
+                    # ddd = dd + 1
+                    # dddd = dd + 2
+                    # if ddd >= 3:
+                    #     ddd = 0
+                    # if dddd >= 3:
+                    #     dddd = 0
+                    # elif dddd >= 4:
+                    #     dddd = 1
+
+                    # if cp.pos != (q, p) and (
+                    #         playertokens[ddd] != (q, p) or playertokens[dddd] != (q, p)):  # if change detected
+                    #     if fonts[ddd] == cp.pos:
+                    #         cp.pos = fonts[ddd]
+                    #     elif fonts[dddd] == cp.pos:
+                    #         cp.pos = fonts[dddd]
+                    #     else:
+                    #         cp.pos = (q, p)
+                    #     continue
+                    # # cp.pos = (q, p)
                     # dddLower = (playertokens[ddd].pos[0] - 20, playertokens[ddd].pos[1] - 20)
                     # dddUpper = (playertokens[ddd].pos[0] + 20, playertokens[ddd].pos[1] + 20)
                     # ddddLower = (playertokens[dddd].pos[0] - 20, playertokens[dddd].pos[1] - 20)
