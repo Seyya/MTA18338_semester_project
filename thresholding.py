@@ -1,32 +1,35 @@
-import numpy as np
-import cv2
 import time
 
-img = cv2.imread('test2.png', 0)  # greyscale image
+import cv2
+import numpy as np
+
+
+# img = cv2.imread('farmhouse-ground-floor.jpg', 0)  # greyscale image
 # img_color = cv2.imread("test.jpg") # color image
-height, width = img.shape[:2]   # dimensions of the image
+#height, width = img.shape[:2]   # dimensions of the image
 # H, W = img_color.shape[:2]     # dimensions of the image
 
-img1 = cv2.imread('book.jpg', cv2.IMREAD_GRAYSCALE)  # imports image (used for adaptive thresholding)
-resize_img = cv2.resize(img1, (200, 150))     # resizes image to another resolution
-img_out = resize_img.copy()                 # makes a copy of the resized image
-height = resize_img.shape[0]                # array of the size of the resized image's height
-width = resize_img.shape[1]                 # array of the size of the resized image's width
+# img1 = cv2.imread('farmhouse-ground-floor.jpg', cv2.IMREAD_GRAYSCALE)  # imports image (used for adaptive thresholding)
+# resize_img = cv2.resize(img1, (200, 150))     # resizes image to another resolution
+# img_out = resize_img.copy()                 # makes a copy of the resized image
+# height = resize_img.shape[0]                # array of the size of the resized image's height
+# width = resize_img.shape[1]                 # array of the size of the resized image's width
 
-cap = cv2.VideoCapture(0)      # variale used to enable camera
+# cap = cv2.VideoCapture(0)      # variale used to enable camera
 
 
-def binary_threshold2image():
-    threshold = 150
+def binary_threshold2image(img, h, w):
+    threshold = 200
 
-    for i in np.arange(height):
-        for j in np.arange(width):
+    for i in np.arange(h):
+        for j in np.arange(w):
             a = img.item(i, j)
             if a > threshold:
                 b = 255
             else:
                 b = 0
             img.itemset((i, j), b)
+    return img
 
 
 def binary_threshold2video():
@@ -121,11 +124,11 @@ def rgb2greyOpenCV2video():
 # blur = cv2.GaussianBlur(img_out,(5,5), cv2.BORDER_DEFAULT)     #filters to test stuff for adaptive thresholding
 # blur = cv2.medianBlur(img, 5)
 
-adaptive_thresholding()
+# adaptive_thresholding()
 
-cv2.imshow("test", img_out)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.imshow("test", img_out)
+# cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 # while True:            #for video things
 

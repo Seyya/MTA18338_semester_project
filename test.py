@@ -76,23 +76,23 @@ while playing:
 
     thresh = cv2.dilate(thresh, None, iterations=2)
 
-    cunts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    cunts = cunts[1]
-    dunts = []
-    funts = []
-    for c in cunts:
+    conts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    conts = conts[1]
+    donts = []
+    fonts = []
+    for c in conts:
         # if the contour is too small, ignore it
         if cv2.contourArea(c) < min_item_size:
             continue
-        dunts.append(c)
+        donts.append(c)
         (x, y, w, h) = cv2.boundingRect(c)
         q = int(x + (w / 2))
         p = int(y + (h / 2))
-        funts.append((q, p))
+        fonts.append((q, p))
     dd = 0  # cuz fuck python
-    if len(dunts) < len(playertokens):
+    if len(donts) < len(playertokens):
         movement_detected = True
-    for d in dunts:  # only go through the "real" contours (aka, not ignored ones)
+    for d in donts:  # only go through the "real" contours (aka, not ignored ones)
         # compute the bounding box for the contour, draw it on the frame
         (x, y, w, h) = cv2.boundingRect(d)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -100,7 +100,7 @@ while playing:
             q = int(x + (w / 2))
             p = int(y + (h / 2))
             cp = playertokens[dd]
-            if len(dunts) == len(playertokens):
+            if len(donts) == len(playertokens):
                 if movement_detected is False:
                     if cp.pos == (0, 0):
                         cp.pos = (q, p)
@@ -125,10 +125,10 @@ while playing:
 
                     if cp.pos != (q, p) and (
                             playertokens[ddd] != (q, p) or playertokens[dddd] != (q, p)):  # if change detected
-                        if funts[ddd] == cp.pos:
-                            cp.pos = funts[ddd]
-                        elif funts[dddd] == cp.pos:
-                            cp.pos = funts[dddd]
+                        if fonts[ddd] == cp.pos:
+                            cp.pos = fonts[ddd]
+                        elif fonts[dddd] == cp.pos:
+                            cp.pos = fonts[dddd]
                         else:
                             cp.pos = (q, p)
                         continue
