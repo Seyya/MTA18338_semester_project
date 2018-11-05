@@ -20,7 +20,7 @@ def dilateboi(img_arr, iteration):
     return img_new
 
 
-def erodebo0i(img_arr, iteration):
+def erodeboi(img_arr, iteration):
     h, w = img_arr.shape
     it = 0
     img_new = img_arr.copy()
