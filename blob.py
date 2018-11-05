@@ -5,7 +5,7 @@ import numpy as np
 # cv2.imshow('Map', cv2.imread('farmhouse-ground-floor.jpg'))
 
 # if set to 0 = laptop webcam, 1 = camera, 2+ = you're on your own
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 while True:
 
@@ -29,6 +29,7 @@ while True:
     keypoints = detector.detect(th)
 
     # TODO try combining the blob center coordinates with the movement.py code to detect unique instances
+    # FIXME if we want to use this, add exception in case there are no blobs detected (right now it crashes)
     circlecenterx = int(keypoints[0].pt[0])
     circlecentery = int(keypoints[0].pt[1])
 
@@ -40,7 +41,7 @@ while True:
     # Draw the centers of detected blobs
     # frame_with_centers = cv2.drawKeypoints(th, keypoints, np.array([]), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
 
-    #Draw the center of blob number 0 based on circlecenterx and y
+    #Draw the center of blob number 0 based on circlecenterx and -y
     frame_with_one_center = cv2.circle(frame, (circlecenterx, circlecentery), 10, (255, 0, 0), -1)
 
     # Show keypoints
