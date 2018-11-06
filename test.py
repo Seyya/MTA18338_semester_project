@@ -52,9 +52,7 @@ playing = True
 movement_detected = False
 frameDelay = 0
 
-readable = 0
 while playing:
-    readable += 1
     if firstFrame is not None:
         lastFrame = frame
     min_item_size = cv2.getTrackbarPos('min_size', 'sliders')
@@ -85,10 +83,6 @@ while playing:
         if cv2.contourArea(c) < min_item_size:
             continue
         donts.append(c)
-        (x, y, w, h) = cv2.boundingRect(c)
-        q = int(x + (w / 2))
-        p = int(y + (h / 2))
-        fonts.append((q, p))
     dd = 0  # cuz fuck python
     if len(donts) < len(playertokens):
         movement_detected = True
@@ -99,6 +93,7 @@ while playing:
         try:
             q = int(x + (w / 2))
             p = int(y + (h / 2))
+            fonts.append((q, p))
             cp = playertokens[dd]
             if len(donts) == len(playertokens):
                 if movement_detected is False:
@@ -106,35 +101,6 @@ while playing:
                         cp.pos = (q, p)
                         continue
 
-                    #
-                    # ddd = dd + 1
-                    # dddd = dd + 2
-                    # if ddd >= 3:
-                    #     ddd = 0
-                    # if dddd >= 3:
-                    #     dddd = 0
-                    # elif dddd >= 4:
-                    #     dddd = 1
-
-                    # if cp.pos != (q, p) and (
-                    #         playertokens[ddd] != (q, p) or playertokens[dddd] != (q, p)):  # if change detected
-                    #     if fonts[ddd] == cp.pos:
-                    #         cp.pos = fonts[ddd]
-                    #     elif fonts[dddd] == cp.pos:
-                    #         cp.pos = fonts[dddd]
-                    #     else:
-                    #         cp.pos = (q, p)
-                    #     continue
-                    # # cp.pos = (q, p)
-                    # dddLower = (playertokens[ddd].pos[0] - 20, playertokens[ddd].pos[1] - 20)
-                    # dddUpper = (playertokens[ddd].pos[0] + 20, playertokens[ddd].pos[1] + 20)
-                    # ddddLower = (playertokens[dddd].pos[0] - 20, playertokens[dddd].pos[1] - 20)
-                    # ddddUpper = (playertokens[dddd].pos[0] + 20, playertokens[dddd].pos[1] + 20)
-                    # if (q, p) != cp.pos and ((dddLower[0] <= q <= dddUpper[0] and dddLower[1] <= p <= dddUpper[1]) or
-                    #                          (ddddLower[0] <= q <= ddddUpper[0] and ddddLower[1] <= p <= ddddUpper[1])):
-                    #     print(cp.name + " moved")
-                    #     cp.pos = (q, p)
-            dd += 1
             if (np.allclose(lastFrame, frame, 0, 225, True)) is False:  # 225 threshold for movement detection
                 frameDelay += 1
                 if frameDelay > 300:
@@ -150,19 +116,24 @@ while playing:
         text = str(cp.name) + " " + str(cp.pos)
         cv2.circle(frame, cp.pos, 5, cp.colour, -1)
         cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        dd += 1
     ml = 0  # movement limiter
-    if movement_detected is False and playertokens[len(playertokens) - 1].pos != (0, 0):
+    if movement_detected is False and playertokens[len(playertokens) - 1].pos != (
+    0, 0):  # don't bother running if all tokens do not have pos yet (because fuck b apparently)
+        fcop = fonts.copy()
         for token in playertokens:
+            #            fuckup = 0
+            print(len(fcop))
             for f in fonts:  # go through every token and position
-                if (token.pos[0] - 5 <= f[0] <= token.pos[0] + 5 and token.pos[1] - 5 <= f[1] <= token.pos[1]) is False:
-                    # if token pos was not found amongst the f in fonts, it has moved, so put token.pos = f.
-                    # however everyone will be wrong in at least 2 of the comparisons (they can only have one pos)
-                    # so find a way to count their mistakes? if 3 = you moved gratz, now which f is not taken?
-                    # take out the f values that have been "taken" by another token?
-                    # if wrong save temp data, if right eventually, delete temp data and replace with correct placement
-                    # if all are wrong, use temp data? but how do you know which of the 3 temp data to use?
-                    # make yet another array, copied from fonts, remove values as they are "taken" and let the last one standing be the one given to the mover
-                    print("jew")  # profit
+                if (token.pos[0] - 5 <= f[0] <= token.pos[0] + 5 and token.pos[1] - 5 <= f[1] <= token.pos[1]) is True:
+                    fcop.remove(token.pos)  # remove matching positions from array
+
+                else:
+                    if len(fcop) == 1:  # should make fuckup redundant
+                        token.pos = fcop[0]
+    #                    fuckup += 1
+    #                   if fuckup >= len(playertokens): #3 fails, aka no fitting position
+    #                        token.pos = fcop[0]
 
     # Display frame
     #  cv2.imshow('Thrash', thresh)
