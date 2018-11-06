@@ -38,6 +38,58 @@ def binary_threshold2video(frame, threshold):
     return binary
 
 
+def adaptive_thresholding(img):
+    #img = cv2.resize(img, (200, 200))   # brug resize hvis billedet er større end 500x500
+    height, width = img.shape
+    img_out = img.copy()
+
+    for i in range(1, height - 7):  # loop that goes through the height of the image with offset 1
+        for j in range(1, width - 7):  # Loop that goes through the width of the image with offset 1
+            sum = 0
+            pix_value = img.item(i, j)  # gets the value of a certain pixel at height/width
+
+            for k in range(-11, 2):  # loop that goes through the pixels in a 13x13 of the pixel at height/width
+                for l in range(-11, 2):  # loop that goes through the pixels in a 13x13 of the pixel at height/width
+                    neighbor_pixels = img.item(i + k, j + l)  # Get the value of the pixels in a 3x3 shape
+                    sum = sum + neighbor_pixels
+
+            b = sum / 169  # sum of all neighbourhood pixel values divided by amount of pixels to get average pixel value
+            if pix_value > b:  # compares pixvalue with mean value to set it to black or white
+                b = 255
+            else:
+                b = 0
+            img_out.itemset((i, j), b)  # apply the changes threshold changes to the image
+            adapt_thr = img_out.copy()
+            print("pos", i,j)
+    return adapt_thr
+
+
+def adaptive_thresholding2video(frame_gray): # needs greyscale frame to work
+    #frame_resize = cv2.resize(img, (200, 200))   # brug resize hvis den skal opdater hurtigere, og ændre frame variable til resize variable
+    height, width = frame_gray.shape[:2]
+    frame_out = np.zeros((height, width), np.uint8)
+
+    for i in range(1, height - 7):  # loop that goes through the height of the image with offset 1
+        for j in range(1, width - 7):  # Loop that goes through the width of the image with offset 1
+            sum = 0
+            pix_value = frame_gray.item(i, j)  # gets the value of a certain pixel at height/width
+
+            for k in range(-11, 2):  # loop that goes through the pixels in a 13x13 of the pixel at height/width
+                for l in range(-11, 2):  # loop that goes through the pixels in a 13x13 of the pixel at height/width
+                    neighbor_pixels = frame_gray.item(i + k, j + l)  # Get the value of the pixels in a 3x3 shape
+                    sum = sum + neighbor_pixels
+
+            b = sum / 169  # sum of all neighbourhood pixel values divided by amount of pixels to get average pixel value
+            if pix_value > b:  # compares pixvalue with mean value to set it to black or white
+                b = 255
+            else:
+                b = 0
+            frame_out.itemset((i, j), b)  # apply the changes threshold changes to the image
+            adapt_thr = frame_out.copy()
+            print("pos", i,j)
+    return adapt_thr
+
+
 def rgb2grey2image(img):
     h, w = img
     ts = time.time()
@@ -52,7 +104,7 @@ def rgb2grey2image(img):
 
 
 def rgb2grey2video(frame):
-    h, w = frame.shape
+    h, w = frame.shape[:2]
     gray = np.zeros((h, w), np.uint8)
     for i in range(h):
         for j in range(w):
@@ -129,3 +181,9 @@ def gaussblur(img):
             b = sub_result
             result.itemset((sourceY, sourceX), b)
     return result
+
+
+
+
+
+
