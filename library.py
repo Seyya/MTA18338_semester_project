@@ -3,45 +3,27 @@ import cv2
 import numpy as np
 
 
-# before optimization: 85.5 ns
-
-
-def binary_threshold2image(img, threshold):
-    h, w = img.shape
-    for i in np.arange(h):
-        for j in np.arange(w):
-            a = img.item(i, j)
-            if a > threshold:
-                b = 255
-            else:
-                b = 0
-            img.itemset((i, j), b)
+def binary_threshold(img, threshold):
+    # original code: 85.5 ns
+    # original code w farmhouse img: 1.1 s
+    # modified w farmhouse: 76.1 ms
+    img[img > threshold] = 255
+    img[img < threshold] = 0
+    # h, w = img.shape
+    # for i in np.arange(h):
+    #     for j in np.arange(w):
+    #         a = img.item(i, j)
+    #         if a > threshold:
+    #             b = 255
+    #         else:
+    #             b = 0
+    #         img.itemset((i, j), b)
     return img
 
 
-def binary_threshold2video(frame, threshold):
-    h, w = frame.shape
-    ts = time.time()
-    gray = np.zeros((h, w), np.uint8)
-    binary = np.zeros((h, w), np.uint8)
-
-    for i in range(h):
-        for j in range(w):
-            gray[i, j] = np.clip(0.07 * frame[i, j, 0] + 0.72 * frame[i, j, 1] + 0.21 * frame[i, j, 2], 0, 255)
-            binary[i, j] = gray[i, j]
-
-            if binary[i, j] > threshold:
-                b = 255
-            else:
-                b = 0
-            binary.itemset((i, j), b)
-
-    t = (time.time() - ts)
-    return binary
-
-
 def adaptive_thresholding(img):
-    # img = cv2.resize(img, (200, 200))   # brug resize hvis billedet er større end 500x500
+    #original code w farmhouse resized to 200x200:
+    img = cv2.resize(img, (200, 200))   # brug resize hvis billedet er større end 500x500
     height, width = img.shape
     img_out = img.copy()
 
@@ -62,7 +44,7 @@ def adaptive_thresholding(img):
                 b = 0
             img_out.itemset((i, j), b)  # apply the changes threshold changes to the image
             adapt_thr = img_out.copy()
-            print("pos", i, j)
+            #print("pos", i, j)
     return adapt_thr
 
 
