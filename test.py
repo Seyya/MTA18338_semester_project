@@ -74,7 +74,7 @@ while playing:
 
     thresh = cv2.dilate(thresh, None, iterations=2)
 
-    conts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    conts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) #can change contour retrieval mode to find markers, it seems
     conts = conts[1]
     donts = []
     fonts = []
