@@ -81,7 +81,6 @@ def boundary_box(outline):
     cv2.rectangle(img, (x, y), (x + l, y + b), (0, 0, 255), 2)
 
 
-#
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
 def contouring(img):  # lad den kalde igen og igen, men
