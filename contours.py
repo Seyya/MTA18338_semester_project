@@ -4,13 +4,16 @@ import numpy as np
 image = cv2.imread("Untitled.png", 0)
 h, w = image.shape
 
+white = 255
+black = 0
+
 img = np.zeros((h, w), np.uint8)
 for x in range(h):
     for y in range(w):
         if image[x, y] >= 250:
-            img[x, y] = 255
+            img[x, y] = white
         else:
-            img[x, y] = 0
+            img[x, y] = black
 
 
 class Pos:
@@ -60,12 +63,17 @@ def cwoffset(point):  # check here  first for erros
 
 
 def clockwise(target, prev):
-    #   fix = prev - target
-    #   fix = Pos(cwoffset(fix.place())[0], cwoffset(fix.place())[1])   # Botcher King
     return cwoffset(prev - target) + target
 
 
-def boundary_box(outline):
+def delete_old_cunts(x, y, l, b, tempi):
+    for k in range(y, l + 1):
+        for g in range(x, b + 1):
+            tempi[k, g] = white
+    return tempi
+
+
+def boundary_box(outline, src, tempi, bo):
     xarray = []
     yarray = []
     for j in outline:
@@ -75,45 +83,60 @@ def boundary_box(outline):
     y = min(yarray)
     l = max(yarray)
     b = max(xarray)
-    cv2.rectangle(img, (x, y), (b, l), (0, 0, 255), 2)
+    if bo is True:
+        cv2.rectangle(src, (x, y), (b, l), black, 2)
+    tempi = delete_old_cunts(x, y, l, b, tempi)
+    return tempi
 
 
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
 def contouring(img):  # lad den kalde igen og igen, men
-    h, w = img.shape
-    first = None
-    outline = set()
-    pixel_found = False
-    for x in range(h):
-        # something possibly missing here. Just hope it gives no issues. (It does if a pixel is found in the first pixel checked)
-        if pixel_found:
-            break
-        for y in range(w):
-            if img[x, y] == 0:  # replace 0 with True once binary function is fixed?
-                first = Pos(x, y)
-                pixel_found = True
+    tempi = img.copy()
+    moreblacks = True
+    while moreblacks:
+        onlyrealcuntshavecurves = True
+        h, w = tempi.shape
+        first = None
+        outline = set()
+        pixel_found = False
+        for x in range(h):
+            # something possibly missing here. Just hope it gives no issues. (It does if a pixel is found in the first pixel checked)
+            if pixel_found:
                 break
-            firstprev = Pos(x, y)
-    if first is None:
-        print("No black pixels found")
+            for y in range(w):
+                if tempi[x, y] == black:  # replace 0 with True once binary function is fixed?
+                    first = Pos(x, y)
+                    pixel_found = True
+                    break
+                firstprev = Pos(x, y)
+        if first is None:
+            print("No white pixels found")
+            moreblacks = False
 
-    if pixel_found:
-        prev = firstprev  # I know. But fuck you python :)
-        outline.add(first)
-        boundary = first
-        curr = clockwise(boundary, prev)
-        while curr != first or prev != firstprev:
-            if w >= curr.y >= 0 and h >= curr.x >= 0 and img[curr.x, curr.y] == 0:
+        if pixel_found:
+            prev = firstprev  # I know. But fuck you python :)
+            outline.add(first)
+            boundary = first
+            curr = clockwise(boundary, prev)
+            blackmanspotted = 0
+            while (curr != first or prev != firstprev) and blackmanspotted <= 8:
+                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == black:
+                    outline.add(curr)
+                    prev = boundary
+                    boundary = curr
+                    curr = clockwise(boundary, prev)
+                    blackmanspotted = 0
+                else:
+                    prev = curr
+                    curr = clockwise(boundary, prev)
+                    blackmanspotted += 1
+            if blackmanspotted > 8:
+                print("Your figures are incomplete you mongrel")
+                onlyrealcuntshavecurves = False
 
-                outline.add(curr)
-                prev = boundary
-                boundary = curr
-                curr = clockwise(boundary, prev)
-            else:
-                prev = curr
-                curr = clockwise(boundary, prev)
-        boundary_box(outline)
+            print(onlyrealcuntshavecurves)
+            tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
     return img
 
 
