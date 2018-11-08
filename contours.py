@@ -1,3 +1,14 @@
+import time
+
+import cv2
+import numpy as np
+
+import alexandria as al
+
+white = 255
+black = 0
+
+
 class Pos:
     x = 0
     y = 0
@@ -51,7 +62,7 @@ def clockwise(target, prev):
 def delete_old_cunts(x, y, l, b, tempi):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
-            tempi[k, g] = 255  # white, remember to change
+            tempi[k, g] = white
     return tempi
 
 
@@ -66,17 +77,20 @@ def boundary_box(outline, src, tempi, bo):
     l = max(yarray)
     b = max(xarray)
     if bo is True:
-        cv2.rectangle(src, (x, y), (b, l), 0, 2)  # black, remember to change
+        cv2.rectangle(src, (x, y), (b, l), black, 2)
     tempi = delete_old_cunts(x, y, l, b, tempi)
     return tempi
 
 
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
-def contouring(img):  # lad den kalde igen og igen, men
-    tempi = img.copy()
+def contouring(img):
+    # tempi = img.copy()
+    tempi = np.ndarray.copy(img)
     moreblacks = True
     while moreblacks:
+        start = time.time()
+        end = time.time()
         onlyrealcuntshavecurves = True
         h, w = tempi.shape
         first = None
@@ -87,13 +101,12 @@ def contouring(img):  # lad den kalde igen og igen, men
             if pixel_found:
                 break
             for y in range(w):
-                if tempi[x, y] == 0:  # black, remember to change
+                if tempi[x, y] == black:  # replace 0 with True once binary function is fixed?
                     first = Pos(x, y)
                     pixel_found = True
                     break
                 firstprev = Pos(x, y)
         if first is None:
-            print("No white pixels found")
             moreblacks = False
 
         if pixel_found:
@@ -102,8 +115,9 @@ def contouring(img):  # lad den kalde igen og igen, men
             boundary = first
             curr = clockwise(boundary, prev)
             blackmanspotted = 0
-            while (curr != first or prev != firstprev) and blackmanspotted <= 8:
-                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == 0:  # black, remember to change
+            while (curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.04:
+                end = time.time()
+                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == black:
                     outline.add(curr)
                     prev = boundary
                     boundary = curr
@@ -117,6 +131,21 @@ def contouring(img):  # lad den kalde igen og igen, men
                 print("Your figures are incomplete you mongrel")
                 onlyrealcuntshavecurves = False
 
-            print(onlyrealcuntshavecurves)
             tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
     return img
+
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    frame = cv2.resize(frame, (200, 200))
+    frame = cv2.imread("Untitled.png")
+    h, w = frame.shape[:2]
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    bina = al.binary_threshold(gray, 127)
+    cv2.rectangle(bina, (0, 0), (w - 1, h - 1), white, 2)
+
+    cv2.imshow("twat", contouring(bina))
+    #    cv2.imshow("twat", bina)
+    cv2.waitKey(1)

@@ -79,10 +79,13 @@ def boundary_box(outline, src, tempi, bo):
 
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
-def contouring(img):  # lad den kalde igen og igen, men
-    tempi = img.copy()
+def contouring(img):
+    # tempi = img.copy()
+    tempi = np.ndarray.copy(img)
     moreblacks = True
     while moreblacks:
+        start = time.time()
+        end = time.time()
         onlyrealcuntshavecurves = True
         h, w = tempi.shape
         first = None
@@ -99,7 +102,6 @@ def contouring(img):  # lad den kalde igen og igen, men
                     break
                 firstprev = Pos(x, y)
         if first is None:
-            print("No white pixels found")
             moreblacks = False
 
         if pixel_found:
@@ -108,8 +110,9 @@ def contouring(img):  # lad den kalde igen og igen, men
             boundary = first
             curr = clockwise(boundary, prev)
             blackmanspotted = 0
-            while (curr != first or prev != firstprev) and blackmanspotted <= 8:
-                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == 0:  # black, remember to change
+            while (curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.04:
+                end = time.time()
+                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == black:
                     outline.add(curr)
                     prev = boundary
                     boundary = curr
@@ -123,7 +126,6 @@ def contouring(img):  # lad den kalde igen og igen, men
                 print("Your figures are incomplete you mongrel")
                 onlyrealcuntshavecurves = False
 
-            print(onlyrealcuntshavecurves)
             tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
     return img
 
