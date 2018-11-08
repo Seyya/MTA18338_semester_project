@@ -1,21 +1,3 @@
-import cv2
-import numpy as np
-
-image = cv2.imread("Untitled.png", 0)
-h, w = image.shape
-
-white = 255
-black = 0
-
-img = np.zeros((h, w), np.uint8)
-for x in range(h):
-    for y in range(w):
-        if image[x, y] >= 250:
-            img[x, y] = white
-        else:
-            img[x, y] = black
-
-
 class Pos:
     x = 0
     y = 0
@@ -69,7 +51,7 @@ def clockwise(target, prev):
 def delete_old_cunts(x, y, l, b, tempi):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
-            tempi[k, g] = white
+            tempi[k, g] = 255  # white, remember to change
     return tempi
 
 
@@ -84,7 +66,7 @@ def boundary_box(outline, src, tempi, bo):
     l = max(yarray)
     b = max(xarray)
     if bo is True:
-        cv2.rectangle(src, (x, y), (b, l), black, 2)
+        cv2.rectangle(src, (x, y), (b, l), 0, 2)  # black, remember to change
     tempi = delete_old_cunts(x, y, l, b, tempi)
     return tempi
 
@@ -105,7 +87,7 @@ def contouring(img):  # lad den kalde igen og igen, men
             if pixel_found:
                 break
             for y in range(w):
-                if tempi[x, y] == black:  # replace 0 with True once binary function is fixed?
+                if tempi[x, y] == 0:  # black, remember to change
                     first = Pos(x, y)
                     pixel_found = True
                     break
@@ -121,7 +103,7 @@ def contouring(img):  # lad den kalde igen og igen, men
             curr = clockwise(boundary, prev)
             blackmanspotted = 0
             while (curr != first or prev != firstprev) and blackmanspotted <= 8:
-                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == black:
+                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == 0:  # black, remember to change
                     outline.add(curr)
                     prev = boundary
                     boundary = curr
@@ -138,7 +120,3 @@ def contouring(img):  # lad den kalde igen og igen, men
             print(onlyrealcuntshavecurves)
             tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
     return img
-
-
-cv2.imshow("twat", contouring(img))
-cv2.waitKey(0)
