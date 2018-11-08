@@ -1,15 +1,14 @@
 import socket                   # Import socket module
 import cv2
 
-s = socket.socket()             # Create a socket object
-host = socket.gethostname()     # Get local machine name
-port = 60000                    # Reserve a port for your service.
+TCP_IP = 'localhost'
+TCP_PORT = 9001
+BUFFER_SIZE = 1024
 
-s.connect((host, port))
-k = 'hello server!'
-s.send(k.encode())
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
 
-with open('test_file', 'wb') as f: #change test_File to desired name of the file
+with open('test_file', 'wb') as f:  # change test_File to desired name of the file
     print('file opened')
     while True:
         print('receiving data...')

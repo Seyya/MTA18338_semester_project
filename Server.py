@@ -1,5 +1,4 @@
 import socket                   # Import socket module
-
 port = 60000                    # Reserve a port for your service.
 s = socket.socket()             # Create a socket object
 host = socket.gethostname()     # Get local machine name
@@ -14,15 +13,14 @@ while True:
     data = conn.recv(1024)
     print('Server received', repr(data))
 
-    filename='book.jpg'         #change this variable for whatever file you want to transfer
-    f = open(filename,'rb')
+    filename='book.jpg'         # change this variable for whatever file you want to transfer
+    f = open('farmhouse-ground-floor.jpg', 'rb')
     l = f.read(1024)
     while (l):
        conn.send(l)
-       print('Sent ',repr(l))
+       print('Sent ', repr(l))
        l = f.read(1024)
     f.close()
-
     print('Done sending')
     conn.send(a.encode())
     conn.close()
