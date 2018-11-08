@@ -44,9 +44,6 @@ class Pos:
         return hash((self.x, self.y))
 
 
-test = Pos(5, 5)
-
-
 def cwoffset(point):  # check here  first for erros
     switcher = {
         Pos(1, 0): Pos(1, -1),
@@ -72,13 +69,13 @@ def boundary_box(outline):
     xarray = []
     yarray = []
     for j in outline:
-        xarray.append(j.x)
-        yarray.append(j.y)
+        yarray.append(j.x)
+        xarray.append(j.y)
     x = min(xarray)
     y = min(yarray)
-    l = max(xarray) - x
-    b = max(yarray) - y
-    cv2.rectangle(img, (x, y), (x + l, y + b), (0, 0, 255), 2)
+    l = max(yarray)
+    b = max(xarray)
+    cv2.rectangle(img, (x, y), (b, l), (0, 0, 255), 2)
 
 
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
