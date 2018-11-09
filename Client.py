@@ -1,8 +1,8 @@
 import socket                   # Import socket module
 import cv2
 
-TCP_IP = 'localhost'
-TCP_PORT = 9001
+TCP_IP = 'localhost'            # connects to localhost (your own pc)
+TCP_PORT = 9001                 # the port to conect to
 BUFFER_SIZE = 1024
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
