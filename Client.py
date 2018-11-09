@@ -1,28 +1,27 @@
-import socket                   # Import socket module
+import socket
 import cv2
 
-TCP_IP = 'localhost'            # connects to localhost (your own pc)
-TCP_PORT = 9001                 # the port to conect to
+IP = input('Enter the IP Address::')    # connects to localhost (your own pc)
+PORT = 9001         # the port to conect to
 BUFFER_SIZE = 1024
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((TCP_IP, TCP_PORT))
+s.connect((IP, PORT))
 
-with open('test_file', 'wb') as f:  # change test_File to desired name of the file
+with open('received_file.jpg', 'wb') as f:  # change received_file to desired name of the file
     print('file opened')
     while True:
-        print('receiving data...')
-        data = s.recv(1024)
+        data = s.recv(BUFFER_SIZE)
         print('data=%s', (data))
         if not data:
+            f.close()
+            print ('file close()')
             break
         # write data to a file
         f.write(data)
 
-f.close()
 print('Successfully get the file')
 s.close()
-print('connection closed')
-img = cv2.imread("test_file")
+img = cv2.imread("received_file.jpg ")
 cv2.imshow("test", img)
-cv2.waitKey()
+print('connection closed')

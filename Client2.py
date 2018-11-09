@@ -1,12 +1,12 @@
 import socket
 import cv2
 
-TCP_IP = 'localhost'    # connects to localhost (your own pc)
-TCP_PORT = 9001         # the port to conect to
+IP = input('Enter the IP Address::')    # connects to localhost (your own pc)
+PORT = 9001         # the port to conect to
 BUFFER_SIZE = 1024
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((TCP_IP, TCP_PORT))
+s.connect((IP, PORT))
 
 with open('received_file.jpg', 'wb') as f:  # change received_file to desired name of the file
     print('file opened')

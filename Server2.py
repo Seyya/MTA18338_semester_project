@@ -2,10 +2,9 @@ import socket
 from threading import Thread
 
 
-TCP_IP = 'localhost'    # the ip of the server (localhost = your own ip)
-TCP_PORT = 9001         # the port of the server
+IP = str(socket.gethostbyname(socket.gethostname()))    # the ip of the server (localhost = your own ip)
+PORT = 9001         # the port of the server
 BUFFER_SIZE = 1024
-
 
 class ClientThread(Thread):                                     # makes the class clientThread
 
@@ -34,9 +33,9 @@ class ClientThread(Thread):                                     # makes the clas
 # create a stream socket and bind it
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   # Creates a socket for IPv4 addresses with TCP
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # To set options at a socket level, makes the socket use itself and reuse its address
-s.bind((TCP_IP, TCP_PORT))                          # binds the socket to a TCP ip and port
+s.bind((IP, PORT))                          # binds the socket to a TCP ip and port
 threads = []                                        # Empty threads array
-
+print('Ip Address of the Server::%s' % IP)
 while True:
     s.listen(5)                                     # listen to incoming connections to the socket and sets the backlog to 5
     print("Waiting for incoming connections...")
