@@ -2,22 +2,10 @@ import numpy as np
 import cv2
 
 #Open image, convert to greyscale and blur
-testImg = cv2.imread('chickens01.jpg', 0)
+testImg = cv2.imread('TestSpots.jpg', 0)
 blur = cv2.GaussianBlur(testImg,(5,5),0)
 __, binaryImg = cv2.threshold(testImg,127,255,cv2.THRESH_BINARY)
 
-
-#Run a given image through and convert it to binary with a given threshold
-#Well that was useless...
-# def runThroughImg(sourceImg, treshVal, iteration):
-#     height = sourceImg.shape[0]
-#     width = sourceImg.shape[1]
-#     it = 0
-#
-#     for Ypos in range(0, width):
-#         for Xpos in range(0, height):
-#             sourceImg[Ypos, Xpos] = 255 if sourceImg[Ypos, Xpos] >= treshVal else 0
-#     return sourceImg
 
 def runGrassFire(id, location, treshVal, sourceImg, result):
     height = sourceImg.shape[0]
@@ -27,7 +15,8 @@ def runGrassFire(id, location, treshVal, sourceImg, result):
     print("The location is: " + str(location))
     #Check pixel above
     y, x = location
-    if y -1 >= 0:
+
+    if y - 1 >= 0:
         if result[y -1, x] == 0:
             #If the pixel is within the treshold, assign ID and add to queue
             if sourceImg[y -1, x] <= treshVal:
@@ -38,8 +27,8 @@ def runGrassFire(id, location, treshVal, sourceImg, result):
                 newQueue.append(newPosition)
 
     #Check pixel to the right
-    if x +1 <= width:
-        if result[y, x +1] == 0:
+    if x + 1 <= width:
+        if result[y, x + 1] == 0:
             if sourceImg[y, x +1] <= treshVal:
                 print("Found pixel to the right")
                 result[y, x +1] = id
@@ -47,11 +36,13 @@ def runGrassFire(id, location, treshVal, sourceImg, result):
                 newQueue.append(newPosition)
 
     #Check pixel below
-    if y +1 <= height:
+    if y + 1 <= height:
+        #print("The y-coordinate is: " + str(y))
         if result[y + 1, x] == 0:
+            #print("The x and y coordinates are: " + str(y, x))
             if sourceImg[y + 1, x] <= treshVal:
                 print("Found pixel below")
-                result[y +1, x] = id
+                result[y + 1, x] = id
                 newPosition = (y + 1, x)
                 newQueue.append(newPosition)
 
@@ -91,30 +82,32 @@ def findBlob(sourceImg, treshVal):
                     print("The position is: " + str(position))
                     newResult, newQueue = runGrassFire(blobID, position, treshVal, sourceImg, result)
                     result = newResult
-                    #queue.extend(newQueue)
+                    queue.extend(newQueue)
                     print("The current BLOB id is: " + str(blobID))
                     #As long as there is coordinates in the queue, keep running the grass-fire algorithm
                     while len(queue) != 0:
                         print("The length of the queue is: " + str(len(queue)))
+                        print("This is the current queue: " + str(queue))
                         print("The first element of the queue is: " + str(queue[0]))
                         #Take the first entry in the queue, run algorithm ect. before deleting the first entry in the queue
                         firstInQueue = queue[0]
-                        runGrassFire(blobID, firstInQueue, treshVal, sourceImg, result)
+
+                        newResult, newQueue = runGrassFire(blobID, firstInQueue, treshVal, sourceImg, result)
                         result = newResult
                         queue.extend(newQueue)
                         #queue.pop(0)
                         del queue[0]
+
                         print(str(len(queue)))
                     blobID += 1
     return result
 
 
-a = findBlob(blur, 100)
+a = findBlob(blur, 175)
 cv2.imshow('Whatever', a)
 
 #Show the binary image
 #cv2.imshow('TEEEEST', runThroughImg(blur, 150))
 cv2.imshow('Binary', binaryImg)
-#cv2.imshow('Test', testImg)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
