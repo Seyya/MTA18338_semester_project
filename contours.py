@@ -140,7 +140,7 @@ cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
     frame = cv2.resize(frame, (200, 200))
-    frame = cv2.imread("Untitled.png")
+    frame = cv2.imread("")
     h, w = frame.shape[:2]
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     bina = al.binary_threshold(gray, 127)

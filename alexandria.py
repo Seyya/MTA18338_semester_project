@@ -1,4 +1,5 @@
 import time
+
 import cv2
 import numpy as np
 
@@ -33,6 +34,18 @@ class Pos:
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def __lt__(self, b):
+        a = self
+        c = a.__sub__(b)
+        res = True
+        if a.y != b.y:
+            if c.y < 0:
+                res = False
+        else:
+            if c.x < 0:
+                res = False
+        return res
+
 
 def cwoffset(point):  # check here  first for erros
     switcher = {
@@ -56,7 +69,7 @@ def clockwise(target, prev):
 def delete_old_cunts(x, y, l, b, tempi):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
-            tempi[k, g] = 255  # white, remember to change
+            tempi[k, g] = 0  # white, remember to change
     return tempi
 
 
@@ -71,7 +84,7 @@ def boundary_box(outline, src, tempi, bo):
     l = max(yarray)
     b = max(xarray)
     if bo is True:
-        cv2.rectangle(src, (x, y), (b, l), 0, 2)  # black, remember to change
+        cv2.rectangle(src, (x, y), (b, l), 255, 2)  # black, remember to change
     tempi = delete_old_cunts(x, y, l, b, tempi)
     return tempi
 
@@ -80,7 +93,10 @@ def boundary_box(outline, src, tempi, bo):
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
 def contouring(img):
     # tempi = img.copy()
+    h, w = img.shape
+    cv2.rectangle(img, (0, 0), (h, w), 0, 2)
     tempi = np.ndarray.copy(img)
+    tempo = []
     moreblacks = True
     while moreblacks:
         start = time.time()
@@ -95,7 +111,7 @@ def contouring(img):
             if pixel_found:
                 break
             for y in range(w):
-                if tempi[x, y] == 0:  # black, remember to change
+                if tempi[x, y] == 255:  # black, remember to change
                     first = Pos(x, y)
                     pixel_found = True
                     break
@@ -109,9 +125,11 @@ def contouring(img):
             boundary = first
             curr = clockwise(boundary, prev)
             blackmanspotted = 0
-            while (curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.04:
+            while (
+                    curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.1:  # 0.04 - very much stc
                 end = time.time()
-                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[curr.x, curr.y] == black:
+                if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[
+                    curr.x, curr.y] == 255:  # black, remember to change - also makes errors with frame sizes above 600?
                     outline.add(curr)
                     prev = boundary
                     boundary = curr
@@ -124,9 +142,31 @@ def contouring(img):
             if blackmanspotted > 8:
                 print("Your figures are incomplete you mongrel")
                 onlyrealcuntshavecurves = False
-
             tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
-    return img
+            tempo.append(outline)
+    return img, tempo
+
+
+def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
+    xarray = []
+    yarray = []
+    it = 0
+    for i in range(len(outline)):  # outline contains multiple outlines (one set for each contour)
+        salasa = str(it)
+        it += 1
+        for j in outline[i]:
+            yarray.append(j.x)
+            xarray.append(j.y)
+        x = min(xarray)
+        y = min(yarray)
+        l = max(yarray)
+        b = max(xarray)
+
+        temp = img[y:l, x:b]  # from min to max (min:max)
+        try:
+            cv2.imshow(salasa, temp)
+        except AssertionError:
+            print('Error occurred. Probably safe to ignore')
 
 
 def binary_threshold(img, threshold):
