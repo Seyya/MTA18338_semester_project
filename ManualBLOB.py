@@ -5,9 +5,10 @@ import cv2
 testImg = cv2.imread('Sheeps01.jpg', 0)
 blur = cv2.GaussianBlur(testImg,(5,5),0)
 __, binaryImg = cv2.threshold(testImg,127,255,cv2.THRESH_BINARY)
-#cam = cv2.VideoCapture(0)
-#ret, frame = cam.read()
-#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+cam = cv2.VideoCapture(0)
+ret, frame = cam.read()
+gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 def runGrassFire(id, location, treshMin, treshMax, sourceImg, result):
     height = sourceImg.shape[0]
@@ -108,9 +109,8 @@ def findBlob(sourceImg, treshMin, treshMax):
     return result
 
 
-a = findBlob(testImg, 0, 50)
-cv2.imshow('Whatever', a)
-cv2.imshow('Original', testImg)
-#cv2.imshow('Feed', frame)
+a = findBlob(gray, 0, 75)
+cv2.imshow('Blobs', a)
+cv2.imshow('Feed', gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
