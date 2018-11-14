@@ -4,6 +4,8 @@ import alexandria as alex
 
 cap = cv2.VideoCapture(0)
 
+#ALL of this is not working yet, mostly just set up early
+
 while True:
     _, frame = cap.read()
     frameToGrey = alex.rgb2grey(frame)
