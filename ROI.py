@@ -15,10 +15,10 @@ def roi_boi(outline, img):  # should be given the outlines given by the second o
             xarray.append(j.y)
         x = min(xarray)
         y = min(yarray)
-        l = max(yarray)
+        k = max(yarray)
         b = max(xarray)
 
-        temp = img[y:l, x:b]  # from min to max (min:max)
+        temp = img[y:k, x:b]  # from min to max (min:max)
         try:
             cv2.imshow(salasa, temp)
         except AssertionError:

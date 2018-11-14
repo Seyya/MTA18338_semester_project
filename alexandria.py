@@ -47,6 +47,7 @@ class Pos:
         return res
 
 
+
 def cwoffset(point):  # check here  first for erros
     switcher = {
         Pos(1, 0): Pos(1, -1),
@@ -66,14 +67,14 @@ def clockwise(target, prev):
     return cwoffset(prev - target) + target
 
 
-def delete_old_cunts(x, y, l, b, tempi):
+def delete_old_cunts(x, y, l, b, tempi, nond):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
-            tempi[k, g] = 0  # white, remember to change
+            tempi[k, g] = nond  # white, remember to change
     return tempi
 
 
-def boundary_box(outline, src, tempi, bo):
+def boundary_box(outline, src, tempi, bo, nond):
     xarray = []
     yarray = []
     for j in outline:
@@ -84,17 +85,20 @@ def boundary_box(outline, src, tempi, bo):
     l = max(yarray)
     b = max(xarray)
     if bo is True:
-        cv2.rectangle(src, (x, y), (b, l), 255, 2)  # black, remember to change
-    tempi = delete_old_cunts(x, y, l, b, tempi)
+        cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
+    tempi = delete_old_cunts(x, y, l, b, tempi, nond)
     return tempi
 
 
 # our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
-def contouring(img):
+def contouring(img, detected):
+    notDetected = 255
+    if detected == 255:
+        notDetected = 0
     # tempi = img.copy()
     h, w = img.shape
-    cv2.rectangle(img, (0, 0), (h, w), 0, 2)
+    cv2.rectangle(img, (0, 0), (h, w), notDetected, 2)
     tempi = np.ndarray.copy(img)
     tempo = []
     moreblacks = True
@@ -111,7 +115,7 @@ def contouring(img):
             if pixel_found:
                 break
             for y in range(w):
-                if tempi[x, y] == 255:  # black, remember to change
+                if tempi[x, y] == detected:  # black, remember to change
                     first = Pos(x, y)
                     pixel_found = True
                     break
@@ -129,7 +133,7 @@ def contouring(img):
                     curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.1:  # 0.04 - very much stc
                 end = time.time()
                 if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[
-                    curr.x, curr.y] == 255:  # black, remember to change - also makes errors with frame sizes above 600?
+                    curr.x, curr.y] == detected:  # black, remember to change - also makes errors with frame sizes above 600?
                     outline.add(curr)
                     prev = boundary
                     boundary = curr
@@ -142,16 +146,16 @@ def contouring(img):
             if blackmanspotted > 8:
                 print("Your figures are incomplete you mongrel")
                 onlyrealcuntshavecurves = False
-            tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
+            tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves, notDetected)
             tempo.append(outline)
     return img, tempo
 
 
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
-    xarray = []
-    yarray = []
     it = 0
     for i in range(len(outline)):  # outline contains multiple outlines (one set for each contour)
+        xarray = []
+        yarray = []
         salasa = str(it)
         it += 1
         for j in outline[i]:
