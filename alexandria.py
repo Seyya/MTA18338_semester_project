@@ -120,7 +120,7 @@ def contouring(img):
             moreblacks = False
 
         if pixel_found:
-            prev = firstprev  # I know. But fuck you python :)
+            prev = firstprev
             outline.add(first)
             boundary = first
             curr = clockwise(boundary, prev)
@@ -146,7 +146,7 @@ def contouring(img):
             tempo.append(outline)
     return img, tempo
 
-
+#Define the Region of Interest - RoI
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
     xarray = []
     yarray = []
@@ -169,6 +169,7 @@ def roi_boi(outline, img):  # should be given the outlines given by the second o
             print('Error occurred. Probably safe to ignore')
 
 
+#Create a binary image based on a given threshold
 def binary_threshold(img, threshold):
     # original code: 85.5 ns
     # original code w farmhouse img: 1.1 s
@@ -214,6 +215,7 @@ def adaptive_thresholding(img):
     return adapt_thr
 
 
+#Manual conversion of an image from RGB to greyscale.
 def rgb2grey(img):
     # original code on farmhouse img: a long long long time
     # modified code -//-: 192 ms
@@ -231,6 +233,7 @@ def rgb2grey(img):
     # cv2.imshow("gray", gray)
 
 
+#Dilation - make an object larger
 def dilate(img_arr, iteration):
     h, w = img_arr.shape
     it = 0
@@ -239,7 +242,7 @@ def dilate(img_arr, iteration):
         print("Dilation iteration: " + str(it + 1))
         for j in range(1, w - 1):
             for i in range(1, h - 1):
-                if img_arr[i, j] == 255:
+                if img_arr[i, j] == 255:            #This dilate uses an 8 core.
                     img_new[i - 1, j - 1] = 255
                     img_new[i - 1, j] = 255
                     img_new[i - 1, j + 1] = 255
@@ -253,6 +256,7 @@ def dilate(img_arr, iteration):
     return img_new
 
 
+#Erosion - make an object smaller
 def erode(img_arr, iteration):
     h, w = img_arr.shape
     it = 0
@@ -261,7 +265,7 @@ def erode(img_arr, iteration):
         print("Erosion iteration: " + str(it + 1))
         for j in range(1, w - 1):
             for i in range(1, h - 1):
-                if img_arr[i, j] == 0:
+                if img_arr[i, j] == 0:              #8-core erode
                     img_new[i - 1, j - 1] = 0
                     img_new[i - 1, j] = 0
                     img_new[i - 1, j + 1] = 0
@@ -275,7 +279,9 @@ def erode(img_arr, iteration):
     return img_new
 
 
+#Manual creation of gaussian blur
 def gaussblur(img):
+    #Using a 5x5 kernel
     kernel = (1.0 / 57) * np.array(
         [[0, 1, 2, 1, 0],
          [1, 3, 5, 3, 1],
@@ -285,17 +291,19 @@ def gaussblur(img):
 
     # Get height and width
     h, w = img.shape
+    #Create a 'copy' of the image, consisting of 0s
     result = np.zeros(img.shape, dtype=np.uint8)
 
-    # compute everything!
+         # compute everything!
+    #Have the kernel placed in [0,0] of the image
     for sourceY in np.arange(2, h - 2):
         for sourceX in np.arange(2, w - 2):
             sub_result = 0.0
             for kernelY in np.arange(-2, 3):
-                for kernelX in np.arange(-2, 3):
+                for kernelX in np.arange(-2, 3):    #compute the new values of the pixel the kernel is handling
                     a = img.item(sourceY + kernelY, sourceX + kernelX)
                     p = kernel[2 + kernelY, 2 + kernelX]
                     sub_result = sub_result + (p * a)
             b = sub_result
-            result.itemset((sourceY, sourceX), b)
+            result.itemset((sourceY, sourceX), b)   #create a resulting image before returning it
     return result
