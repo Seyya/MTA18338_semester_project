@@ -1,5 +1,5 @@
-import time
 import cv2
+import time
 import numpy as np
 
 
@@ -34,7 +34,7 @@ class Pos:
         return hash((self.x, self.y))
 
 
-def cwoffset(point):  # check here  first for erros
+def cwoffset(point):  # check here first for errors
     switcher = {
         Pos(1, 0): Pos(1, -1),
         Pos(1, -1): Pos(0, -1),
@@ -53,7 +53,7 @@ def clockwise(target, prev):
     return cwoffset(prev - target) + target
 
 
-def delete_old_cunts(x, y, l, b, tempi):
+def delete_old_contours(x, y, l, b, tempi):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
             tempi[k, g] = 255  # white, remember to change
@@ -72,7 +72,7 @@ def boundary_box(outline, src, tempi, bo):
     b = max(xarray)
     if bo is True:
         cv2.rectangle(src, (x, y), (b, l), 0, 2)  # black, remember to change
-    tempi = delete_old_cunts(x, y, l, b, tempi)
+    tempi = delete_old_contours(x, y, l, b, tempi)
     return tempi
 
 
@@ -148,8 +148,8 @@ def binary_threshold(img, threshold):
 
 
 def adaptive_thresholding(img):
-    #original code w farmhouse resized to 200x200:
-    img = cv2.resize(img, (200, 200))   # brug resize hvis billedet er større end 500x500
+    # original code w farmhouse resized to 200x200:
+    img = cv2.resize(img, (200, 200))  # brug resize hvis billedet er større end 500x500
     height, width = img.shape
     img_out = img.copy()
 
