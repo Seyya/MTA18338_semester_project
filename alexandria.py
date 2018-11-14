@@ -8,21 +8,26 @@ class Pos:
     x = 0
     y = 0
 
+    #"Constructor"
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
+    #Return x and y
     def place(self):
         return self.x, self.y
 
+    #Create functions for a and b, allowing them to be added together
     def __add__(self, b):
         a = self
         return Pos(a.x + b.x, a.y + b.y)
 
+    #Create a function to allow a and b to be substracted from each other
     def __sub__(self, b):
         a = self
         return Pos(a.x - b.x, a.y - b.y)
 
+    #Create  a function checking if a and b are equal
     def __eq__(self, b):
         a = self
         return a.x == b.x and a.y == b.y
@@ -31,9 +36,11 @@ class Pos:
     #     a = self
     #     return not a == b
 
+    #Makes a and b hashable
     def __hash__(self):
         return hash((self.x, self.y))
 
+    #Function checking if one is smaller than the other
     def __lt__(self, b):
         a = self
         c = a.__sub__(b)
