@@ -153,10 +153,11 @@ def contouring(img, detected):
 
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
     it = 0
+    sub_images = []
     for i in range(len(outline)):  # outline contains multiple outlines (one set for each contour)
         xarray = []
         yarray = []
-        salasa = str(it)
+        # salasa = str(it)
         it += 1
         for j in outline[i]:
             yarray.append(j.x)
@@ -167,10 +168,12 @@ def roi_boi(outline, img):  # should be given the outlines given by the second o
         b = max(xarray)
 
         temp = img[y:l, x:b]  # from min to max (min:max)
-        try:
-            cv2.imshow(salasa, temp)
-        except AssertionError:
-            print('Error occurred. Probably safe to ignore')
+        sub_images.append(temp)
+        # try:
+        #   cv2.imshow(salasa, temp)
+        # except AssertionError:
+        #    print('Error occurred. Probably safe to ignore')
+        return sub_images
 
 
 def binary_threshold(img, threshold):
