@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+
 import alexandria as al
 
 frame = cv2.imread("marker_1383.png")
@@ -37,7 +38,7 @@ def order_points(pts):  # stolen, but useless
 #        frame_captured = False
 #   while frame_captured:
 # important stuff starts here
-#frame = cv2.resize(frame, (200, 200))  # resize for faster computations
+# frame = cv2.resize(frame, (200, 200))  # resize for faster computations
 gray = al.rgb2grey(frame)  # grayscale
 bina = al.binary_threshold(gray, 127)  # binary
 conts, outlines = al.contouring(bina, 0)  # image with conts drawn, and the outlines of the conts

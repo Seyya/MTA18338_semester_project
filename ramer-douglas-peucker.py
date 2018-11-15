@@ -1,5 +1,9 @@
 import math
 
+import cv2
+
+import alexandria as al
+
 
 # finds the perpendicular distance between a line and a point
 def range_finder(pt, a, b, c):  # abc for line equation: ax+by+c
@@ -42,3 +46,19 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
     else:
         result_list = pts[0], pts[end]
     return result_list
+
+
+# pts = [(0, 0), (0, 5), (5, 5), (6, 3), (5, 0)]
+img = cv2.imread("marker_1383.png")
+th = al.rgb2grey(img)
+# bina = al.binary_threshold(grey, 127)
+for o in outlines:
+    o = list(o)
+    o.sort(reverse=True)
+    smol = square_maker3000(o, 1)
+    for s in smol:
+        cv2.circle(conts, s.place(), 5, 127, -1)
+
+# pts = [al.Pos(0, 0), al.Pos(0, 5), al.Pos(5, 5), al.Pos(6, 3), al.Pos(5, 0)]
+# print(pts)
+# print(square_maker3000(pts, 3))
