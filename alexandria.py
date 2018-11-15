@@ -72,7 +72,7 @@ def boundary_box(outline, src, tempi, bo):
     b = max(xarray)
     if bo is True:
         cv2.rectangle(src, (x, y), (b, l), 0, 2)  # black, remember to change
-    tempi = delete_old_cunts(x, y, l, b, tempi)
+    tempi = delete_old_conts(x, y, l, b, tempi)
     return tempi
 
 
@@ -85,7 +85,7 @@ def contouring(img):
     while moreblacks:
         start = time.time()
         end = time.time()
-        onlyrealcuntshavecurves = True
+        onlyrealcontshavecurves = True
         h, w = tempi.shape
         first = None
         outline = set()
@@ -123,9 +123,9 @@ def contouring(img):
                     blackmanspotted += 1
             if blackmanspotted > 8:
                 print("Your figures are incomplete you mongrel")
-                onlyrealcuntshavecurves = False
+                onlyrealcontshavecurves = False
 
-            tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves)
+            tempi = boundary_box(outline, img, tempi, onlyrealcontshavecurves)
     return img
 
 
