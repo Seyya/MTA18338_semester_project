@@ -1,7 +1,5 @@
 import math
 
-import alexandria as al  # remove after testing
-
 
 # finds the perpendicular distance between a line and a point
 def range_finder(pt, a, b, c):  # abc for line equation: ax+by+c
@@ -26,7 +24,7 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
         i += 1
         a, b, c = line_finder(pts[0].x, pts[0].y, pts[end].x, pts[end].y)
         d = range_finder(pt, a, b, c)
-        if d > dmax:
+        if d > dmax:  # only the last pts checked will submit to this
             index = i
             dmax = d
 
@@ -44,10 +42,3 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
     else:
         result_list = pts[0], pts[end]
     return result_list
-
-
-# pts = [(0, 0), (0, 5), (5, 5), (6, 3), (5, 0)]
-pts = [al.Pos(0, 0), al.Pos(0, 5), al.Pos(5, 5), al.Pos(6, 3), al.Pos(5, 0)]
-
-print(pts)
-print(square_maker3000(pts, 3))

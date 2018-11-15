@@ -1,4 +1,5 @@
 import time
+import math
 import cv2
 import numpy as np
 
@@ -7,12 +8,12 @@ class Pos:
     x = 0
     y = 0
 
-    def __init__(self, x, y):
+    def __init__(self, x, y):  # swapping these breaks shit
         self.x = x
         self.y = y
 
     def place(self):
-        return self.x, self.y
+        return self.y, self.x  # swapped to conform with python/cv2
 
     def __add__(self, b):
         a = self
@@ -26,22 +27,22 @@ class Pos:
         a = self
         return a.x == b.x and a.y == b.y
 
-    # def __ne__(self, b):  # apparently only necessary in python 2 and not 3?
+    # def __ne__(self, b):  # apparently only necessary in python 2 and not 3
     #     a = self
     #     return not a == b
 
     def __hash__(self):
         return hash((self.x, self.y))
 
-    def __lt__(self, b):
+    def __lt__(self, b):  # swapped x and y in this method as well
         a = self
         c = a.__sub__(b)
         res = True
-        if a.y != b.y:
-            if c.y < 0:
+        if a.x != b.x:
+            if c.x < 0:
                 res = False
         else:
-            if c.x < 0:
+            if c.y < 0:
                 res = False
         return res
 
@@ -304,3 +305,60 @@ def gaussblur(img):
             b = sub_result
             result.itemset((sourceY, sourceX), b)
     return result
+
+
+# finds the perpendicular distance between a line and a point
+def range_finder(pt, a, b, c):  # abc for line equation: ax+by+c
+    bla = math.sqrt(a * a + b * b)
+    if bla != 0:
+        return abs((a * pt.x + b * pt.y + c)) / bla  # math
+    else:
+        return -1
+
+
+# finds a line function (or linear equation) ax + by + c
+def line_finder(x1, y1, x2, y2):
+    a = y1 - y2
+    b = x2 - x1
+    c = x1 * y2 - x2 * y1
+    return a, b, c
+
+
+# functions requires a list of Pos objects, and a user defined epsilon
+def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasPeucker  # 379, 44
+    dmax = 0
+    index = 0
+    end = len(pts) - 1
+    i = 0
+    result_list = []
+    for pt in pts:
+        i += 1
+        a, b, c = line_finder(pts[0].x, pts[0].y, pts[end].x, pts[end].y)
+        d = range_finder(pt, a, b, c)
+        if d > dmax:
+            index = i
+            dmax = d
+    recpts1 = []
+    recpts2 = []
+
+    if dmax > epsilon:
+        for l in range(0, index):
+            recpts1.append(pts[l])
+        for p in range(index, end):
+            recpts2.append(pts[p])
+        recresults1 = square_maker3000(recpts1, epsilon)
+        recresults2 = square_maker3000(recpts2, epsilon)
+
+        for r in recresults1:
+            result_list.append(r)
+        for r in recresults2:
+            result_list.append(r)
+#        result_list = recresults1, recresults2
+
+    else:
+        try:
+            result_list = pts[0], pts[end]
+        except IndexError:
+            return pts
+    return result_list
+
