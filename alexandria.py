@@ -53,7 +53,7 @@ def clockwise(target, prev):
     return cwoffset(prev - target) + target
 
 
-def delete_old_cunts(x, y, l, b, tempi):
+def delete_old_conts(x, y, l, b, tempi):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
             tempi[k, g] = 255  # white, remember to change
