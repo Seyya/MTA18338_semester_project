@@ -145,7 +145,7 @@ def contouring(img, detected):
             if blackmanspotted > 8:
                 print("Your figures are incomplete you mongrel")
                 onlyrealcontshavecurves = False
-            tempi = boundary_box(outline, img, tempi, onlyrealcuntshavecurves, notDetected)
+            tempi = boundary_box(outline, img, tempi, onlyrealcontshavecurves, notDetected)
             tempo.append(outline)
     return img, tempo
 
