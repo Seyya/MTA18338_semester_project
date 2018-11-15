@@ -36,12 +36,12 @@ if __name__ == '__main__':
         frame_captured = False
     while frame_captured:
         # important stuff starts here
-        frame = cv2.resize(frame, (200, 200))
-        gray = al.rgb2grey(frame)
-        bina = al.binary_threshold(gray, 127)
-        conts, outlines = al.contouring(bina, 0)
-        twats = al.roi_boi(outlines, bina)
-        cv2.approxPolyDP(twats, (0, 0))  # TODO fix approxpolydp. you have what you need. you cunt, git good
+        frame = cv2.resize(frame, (200, 200))  # resize for faster computations
+        gray = al.rgb2grey(frame)  # grayscale
+        bina = al.binary_threshold(gray, 127)  # binary
+        conts, outlines = al.contouring(bina, 0)  # image with conts drawn, and the outlines of the conts
+        twats = al.roi_boi(outlines, bina)  # the region of interest(s), extracted as numpyarray/image
+        
         # stops here
 
         cv2.imshow('Test Frame', conts)
