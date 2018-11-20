@@ -48,7 +48,6 @@ class Pos:
         return res
 
 
-
 def cwoffset(point):  # check here  first for erros
     switcher = {
         Pos(1, 0): Pos(1, -1),
@@ -85,8 +84,8 @@ def boundary_box(outline, src, tempi, bo, nond):
     y = min(yarray)
     l = max(yarray)
     b = max(xarray)
-    if bo is True:
-        cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
+    #   if bo is True:
+    #       cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
     tempi = delete_old_conts(x, y, l, b, tempi, nond)
     return tempi
 
@@ -308,6 +307,11 @@ def gaussblur(img):
     return result
 
 
+def distance_finder(x1, y1, x2, y2):
+    dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    return dist
+
+
 # finds the perpendicular distance between a line and a point
 def range_finder(pt, a, b, c):  # abc for line equation: ax+by+c
     bla = math.sqrt(a * a + b * b)
@@ -363,3 +367,51 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
             return pts
     return result_list
 
+
+def order_list(alist):  # slow as fuck, but sorts perfectly (when in list format) #TODO optimize me
+    i = 0
+    again = True
+    while again:
+        for l in alist:
+            i += 1
+            if i < len(alist):
+                a = l
+                b = alist[i]
+                if a > b:
+                    alist[i] = a  # b = a
+                    alist[i - 1] = b  # a = b
+                    again = True
+                    i = 0
+                    break
+                else:
+                    again = False
+
+    return alist  # return the sorted list
+
+
+def find_corners(outline):  # corners matter, but not their individuality. No need to preserve
+    setlist = list(outline)
+    setlist = order_list(setlist)
+    topright = Pos(setlist[0].x, setlist[0].y)  # right when rotated 45
+    topleft = setlist[0]  # top when rotated 45
+    bottomright = setlist[len(setlist) - 1]  # bot when roated 45
+    bottomleft = Pos(setlist[0].x, setlist[0].y)
+
+    for o in setlist:  # might wanna tangle this into the pos object from alexandria
+        if o.y >= topright.y and o.x <= topright.x:
+            topright.x = o.x
+            topright.y = o.y
+        if o.y <= bottomleft.y and o.x >= bottomleft.x:
+            bottomleft.x = o.x
+            bottomleft.y = o.y
+
+    a = bottomleft.y + 1
+    b = topleft.y
+    if a == b:
+        bottomleft = Pos(setlist[0].x, setlist[0].y)
+        for o in setlist:
+            if o.y <= bottomleft.y:
+                bottomleft.x = o.x
+                bottomleft.y = o.y
+
+    return [topright, topleft, bottomright, bottomleft]
