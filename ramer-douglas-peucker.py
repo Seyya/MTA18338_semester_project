@@ -49,7 +49,7 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
 
 
 # pts = [(0, 0), (0, 5), (5, 5), (6, 3), (5, 0)]
-img = cv2.imread("marker_1383.png")
+# img = cv2.imread("")
 th = al.rgb2grey(img)
 # bina = al.binary_threshold(grey, 127)
 for o in outlines:

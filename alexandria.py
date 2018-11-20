@@ -1,5 +1,6 @@
-import time
 import math
+import time
+
 import cv2
 import numpy as np
 
@@ -148,7 +149,7 @@ def contouring(img, detected):
                 onlyrealcontshavecurves = False
             tempi = boundary_box(outline, img, tempi, onlyrealcontshavecurves, notDetected)
             tempo.append(outline)
-    return img, tempo
+    return tempo  # probably does not have to return img, so it has been removed temporarily
 
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
     it = 0

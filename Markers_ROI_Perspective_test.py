@@ -3,7 +3,8 @@ import numpy as np
 
 import alexandria as al
 
-frame = cv2.imread("marker_1383.png")
+
+# frame = cv2.imread("")
 
 
 def order_points(pts):  # stolen, but useless
