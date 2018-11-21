@@ -1,17 +1,16 @@
 # import the necessary packages
 import cv2
-import imutils
 import numpy as np
 from skimage import exposure
 
 
-def dostuff(image):
+def findSquares(image):
     ratio = image.shape[0] / 300.0
+    dim = int(image.shape[1] / ratio), 300
     orig = image.copy()
-    image = imutils.resize(image, height=300)
+    image = cv2.resize(image, dim)
 
-    # convert the image to grayscale, blur it, and find edges
-    # in the image
+    # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
     edged = cv2.Canny(gray, 30, 200)
@@ -113,13 +112,16 @@ while RUNNING:
     ret, image = cap.read()
     cv2.imshow("image", image)
     wasps = 0
-    for w in dostuff(image):
+    for w in findSquares(image):
         wasps += 1
-        cv2.imshow("twat: " + str(wasps), imutils.resize(w, height=300))
+
+        ratio = image.shape[0] / 300.0
+        dim = int(image.shape[1] / ratio), 300
+        newimage = cv2.resize(image, dim)
+
+        cv2.imshow("Found square contours: " + str(wasps), newimage)
     cv2.waitKey(0)
-# image = cv2.imread("gbc.jpg")
-# show our images
+
 
 # cv2.imshow("edge", edged)
-# cv2.imshow("crop", imutils.resize(crop, height=300))
 cv2.waitKey(0)
