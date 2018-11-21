@@ -9,7 +9,7 @@ class Pos:
     x = 0
     y = 0
 
-    def __init__(self, x, y):  # swapping these breaks shit
+    def __init__(self, x, y):  # swapping these breaks
         self.x = x
         self.y = y
 
@@ -145,7 +145,7 @@ def contouring(img, detected):
                     curr = clockwise(boundary, prev)
                     blackmanspotted += 1
             if blackmanspotted > 8:
-                print("Your figures are incomplete you mongrel")
+                print("Your figures are incomplete")
                 onlyrealcontshavecurves = False
             tempi = boundary_box(outline, img, tempi, onlyrealcontshavecurves, notDetected)
             tempo.append(outline)
