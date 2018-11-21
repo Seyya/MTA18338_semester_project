@@ -415,3 +415,46 @@ def find_corners(outline):  # corners matter, but not their individuality. No ne
                 bottomleft.y = o.y
 
     return [topright, topleft, bottomright, bottomleft]
+
+
+def detect_lines(img):
+    height, width = img.shape
+    newimg = np.zeros((height, width), np.uint8)
+    kernelx = [0] * 9  # g_x
+    kernely = [0] * 9  # g_y
+
+    for j in range(1, width - 1):
+        for i in range(1, height - 1):
+            kernelx[0] = img[i - 1, j - 1] * -3
+            kernelx[1] = img[i - 1, j] * 0
+            kernelx[2] = img[i - 1, j + 1] * 3
+            kernelx[3] = img[i, j - 1] * -10
+            kernelx[4] = img[i, j] * 0
+            kernelx[5] = img[i, j + 1] * 10
+            kernelx[6] = img[i + 1, j - 1] * -3
+            kernelx[7] = img[i + 1, j] * 0
+            kernelx[8] = img[i + 1, j + 1] * 3
+
+            gx = sum(kernelx)
+            kernelx_average = gx / 9
+
+            kernely[0] = img[i - 1, j - 1] * -3
+            kernely[1] = img[i - 1, j] * -10
+            kernely[2] = img[i - 1, j + 1] * -3
+            kernely[3] = img[i, j - 1] * 0
+            kernely[4] = img[i, j] * 0
+            kernely[5] = img[i, j + 1] * 0
+            kernely[6] = img[i + 1, j - 1] * 3
+            kernely[7] = img[i + 1, j] * 10
+            kernely[8] = img[i + 1, j + 1] * 3
+
+            gy = sum(kernely)
+            kernely_average = gy / 9
+            # g = math.sqrt(kernelx_average ** 2 + kernely_average ** 2)
+            #            theta = (np.arctan(gy/gx))*180/math.pi
+            #            if theta == 90 or theta == 0:
+            g = math.sqrt(kernelx_average ** 2 + kernely_average ** 2)
+            #            else:
+            #                g = 0
+            newimg[i, j] = g
+    return newimg
