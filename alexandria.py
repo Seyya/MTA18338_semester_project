@@ -150,6 +150,7 @@ def contouring(img, detected):
             tempo.append(outline)
     return tempo  # probably does not have to return img, so it has been removed temporarily
 
+
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
     it = 0
     sub_images = []
