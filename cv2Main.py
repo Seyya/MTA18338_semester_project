@@ -117,7 +117,7 @@ while RUNNING:
         wasps += 1
         cv2.imshow("twat: " + str(wasps), imutils.resize(w, height=300))
     cv2.waitKey(0)
-# image = cv2.imread("gbc.jpg")
+
 # show our images
 
 # cv2.imshow("edge", edged)
