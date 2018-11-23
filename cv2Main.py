@@ -58,11 +58,12 @@ def findSquares(image):
     im2, contours, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # cnts = contours[0]
     # cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
-
+    cv2.imshow("edgy", edged)
     # cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:10]
-    screenCnt = None
     # loop over our contours
     warps = []
+    conts = []
+    theonecont = False  # fixes contour duplicates
     for c in contours:
         if cv2.contourArea(c) < 250:  # if the contour is too small, ignore it #TODO change me
             continue
@@ -129,9 +130,13 @@ def findSquares(image):
             # values of 0 and 255, respectively
             warp = cv2.cvtColor(warp, cv2.COLOR_BGR2GRAY)
             warp = exposure.rescale_intensity(warp, out_range=(0, 255))
-
-            warps.append(warp)
-    return warps
+            if theonecont:
+                warps.append(warp)
+                conts.append(c)
+                theonecont = False
+            else:
+                theonecont = True
+    return warps, conts
     # the pokemon we want to identify will be in the top-right
     # corner of the warped image -- let's crop this region out
     #    (h, w) = warp.shape
@@ -144,22 +149,24 @@ def findSquares(image):
 
 cap = cv2.VideoCapture(0)
 RUNNING = True
-firstFrame = None
 while RUNNING:
     # https://www.pyimagesearch.com/2014/05/05/building-pokedex-python-opencv-perspective-warping-step-5-6/
     # https://www.pyimagesearch.com/2014/04/21/building-pokedex-python-finding-game-boy-screen-step-4-6/
-    ret, image = cap.read()
-    cv2.imshow("image", image)
+    #    ret, image = cap.read()
+    image = cv2.imread("phone_test.jpg")
     wasps = 0
-    for w in findSquares(image):
+    warps, conts = findSquares(image)
+    drawn = resize(image, height=300)
+
+    for wa in warps:
+        c = conts[wasps]
         wasps += 1
 
-        # ratio = image.shape[0] / 300.0
-        # dim = int(image.shape[1] / ratio), 300
-        # newimage = cv2.resize(image, dim)
-
-        cv2.imshow("Found square contours: " + str(wasps), resize(w, height=300))
-    cv2.waitKey(0)
+        (x, y, w, h) = cv2.boundingRect(c)
+        cv2.rectangle(drawn, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.imshow("Found: " + str(wasps), resize(wa, height=300))
+    cv2.imshow("Ay", drawn)
+    cv2.waitKey(1)
 
 # show our images
 

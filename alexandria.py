@@ -90,8 +90,8 @@ def boundary_box(outline, src, tempi, bo, nond):
     return tempi
 
 
-# our god: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
-# https://github.com/Dkendal/Moore-Neighbor_Contour_Tracer/blob/master/ContourTrace.cs
+# our lord and savior: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
+
 def contouring(img, detected):
     notDetected = 255
     if detected == 255:
@@ -390,7 +390,7 @@ def order_list(alist):  # slow as fuck, but sorts perfectly (when in list format
     return alist  # return the sorted list
 
 
-def find_corners(outline):  # corners matter, but not their individuality. No need to preserve
+def find_corners(outline):  # corners matter, but not their individuality. No need to preserve them
     setlist = list(outline)
     setlist = order_list(setlist)
     topright = Pos(setlist[0].x, setlist[0].y)  # right when rotated 45
@@ -398,7 +398,7 @@ def find_corners(outline):  # corners matter, but not their individuality. No ne
     bottomright = setlist[len(setlist) - 1]  # bot when roated 45
     bottomleft = Pos(setlist[0].x, setlist[0].y)
 
-    for o in setlist:  # might wanna tangle this into the pos object from alexandria
+    for o in setlist:  # might wanna tangle this into the pos object
         if o.y >= topright.y and o.x <= topright.x:
             topright.x = o.x
             topright.y = o.y
