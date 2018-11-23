@@ -161,5 +161,7 @@ while RUNNING:
         cv2.imshow("Found square contours: " + str(wasps), resize(w, height=300))
     cv2.waitKey(0)
 
+# show our images
+
 # cv2.imshow("edge", edged)
 cv2.waitKey(0)
