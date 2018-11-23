@@ -4,11 +4,50 @@ import numpy as np
 from skimage import exposure
 
 
+# this code section is straight up copy pasted from the library imutils bc i cant import it and it does some kind of
+# magic that cannot be recreated
+# TODO make function our own/incorporate into own code and/or move to alexandria
+def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation=inter)
+
+    # return the resized image
+    return resized
+
+
 def findSquares(image):
+    # ratio = image.shape[0] / 300.0
+    # dim = int(image.shape[1] / ratio), 300
+    # orig = image.copy()
+    # image = cv2.resize(image, dim)
+
     ratio = image.shape[0] / 300.0
-    dim = int(image.shape[1] / ratio), 300
     orig = image.copy()
-    image = cv2.resize(image, dim)
+    image = resize(image, height=300)
 
     # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -115,13 +154,12 @@ while RUNNING:
     for w in findSquares(image):
         wasps += 1
 
-        ratio = image.shape[0] / 300.0
-        dim = int(image.shape[1] / ratio), 300
-        newimage = cv2.resize(image, dim)
+        # ratio = image.shape[0] / 300.0
+        # dim = int(image.shape[1] / ratio), 300
+        # newimage = cv2.resize(image, dim)
 
-        cv2.imshow("Found square contours: " + str(wasps), newimage)
+        cv2.imshow("Found square contours: " + str(wasps), resize(w, height=300))
     cv2.waitKey(0)
-
 
 # cv2.imshow("edge", edged)
 cv2.waitKey(0)
