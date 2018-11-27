@@ -4,6 +4,17 @@ import numpy as np
 from skimage import exposure
 
 
+def mean_squared_error(imageA, imageB):
+    # the 'Mean Squared Error' between the two images is the
+    # sum of the squared difference between the two images;
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+
+    # return the MSE, the lower the error, the more "similar"
+    # the two images are
+    return err
+
+
 # this code section is straight up copy pasted from the library imutils bc i cant import it and it does some kind of
 # magic that cannot be recreated
 # TODO make function our own/incorporate into own code and/or move to alexandria
@@ -152,21 +163,37 @@ RUNNING = True
 while RUNNING:
     # https://www.pyimagesearch.com/2014/05/05/building-pokedex-python-opencv-perspective-warping-step-5-6/
     # https://www.pyimagesearch.com/2014/04/21/building-pokedex-python-finding-game-boy-screen-step-4-6/
-    #    ret, image = cap.read()
-    image = cv2.imread("phone_test.jpg")
+    ret, image = cap.read()
+    # image = cv2.imread("phone_test.jpg")
     wasps = 0
     warps, conts = findSquares(image)
     drawn = resize(image, height=300)
-
+    temp_match_arr = []
     for wa in warps:
         c = conts[wasps]
         wasps += 1
-
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(drawn, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        cv2.imshow("Found: " + str(wasps), resize(wa, height=300))
+        temp_match_arr.append(wa)
+
+    templates = []
+    for i in range(0, 3):
+        template = cv2.imread('temp%s.jpg' % i, 0)
+        print("read: temp%s.jpg" % i)
+        templates.append(template)
+    t = -1
+    for template in templates:
+        t += 1
+        for img in temp_match_arr:
+            img = cv2.resize(img, (template.shape[1], template.shape[0]))
+            rows, cols = img.shape
+            for i in range(0, 4):
+                M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90 * i, 1)
+                dst = cv2.warpAffine(img, M, (cols, rows))
+                if mean_squared_error(dst, template) < 10000:  # TODO: fine tune me
+                    cv2.imshow("Found: " + str(t), resize(img, height=300))
     cv2.imshow("Ay", drawn)
-    cv2.waitKey(1)
+    cv2.waitKey(0)
 
 # show our images
 
