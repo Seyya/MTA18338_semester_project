@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from skimage import exposure
 
+import Client
 import alexandria as al
 
 
@@ -78,7 +79,7 @@ def findSquares(image):
     conts = []
     theonecont = False  # fixes contour duplicates
     for c in contours:
-        if cv2.contourArea(c) < 250:  # if the contour is too small, ignore it #TODO change me
+        if cv2.contourArea(c) < 50:  # if the contour is too small, ignore it #TODO change me
             continue
         # approximate the contour
         peri = cv2.arcLength(c, True)
@@ -163,9 +164,9 @@ def findSquares(image):
 cap = cv2.VideoCapture(0)
 RUNNING = True
 
-one = al.Pos(0, 0)
-two = al.Pos(0, 0)
-three = al.Pos(0, 0)
+one = al.Pos(30000, 30000)
+two = al.Pos(100, 100)
+three = al.Pos(20, 20)
 playerList = [one, two, three]
 
 templates = []
@@ -207,8 +208,11 @@ while RUNNING:
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
                     playerList[t] = posList[ma]
             ma += 1
-    for pc in playerList:
-        print(pc.place())
+    Client.send_pos(playerList)
+    bg_ch = True  # send this as a message from server ("hey i updated map fu") Should prolly run once regardless
+    if bg_ch:
+        cv2.imshow("Background", Client.recieve_bg())
+        print("Background recieved from server")
     cv2.imshow("Ay", drawn)
     cv2.waitKey(0)
 

@@ -1,10 +1,11 @@
 import socket
+import struct
 from threading import Thread
-
 
 IP = str(socket.gethostbyname(socket.gethostname()))    # the ip of the server (localhost = your own ip)
 PORT = 9001         # the port of the server
 BUFFER_SIZE = 1024
+
 
 class ClientThread(Thread):                                     # makes the class clientThread
 
@@ -16,18 +17,32 @@ class ClientThread(Thread):                                     # makes the clas
         print(" New thread started for "+ip+":"+str(port))      # prints a string with the ip and port of the client
 
     def run(self):                                # Function for file transfer
-        filename = 'farmhouse-ground-floor.jpg'   # initializing variable with an image
-        f = open(filename, 'rb')                  # Variable that checks if the file can be opened and read in a binary mode
-        while True:
-            l = f.read(BUFFER_SIZE)               # Reads the image with a given buffer size (1024)
-            while (l):
-                self.sock.send(l)                 # As lng as l is true it sends the image
-                # print('Sent ',repr(l))
-                l = f.read(BUFFER_SIZE)           # having a second buffer allows the thread to read from two different buffers to inrease transfer speed
-            if not l:
-                f.close()                         # Closes the file and its availablility
-                self.sock.close()                 # closes the socket
-                break
+        request = conn.recv(BUFFER_SIZE)
+        i_am_sending = False
+        if len(request) == 1:
+            i_am_sending = struct.unpack('?', request)
+        if i_am_sending:
+            filename = 'farmhouse-ground-floor.jpg'  # initializing variable with an image
+            f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
+            while True:
+                l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)
+                while (l):
+                    self.sock.send(l)  # As long as l is true it sends the image
+                    # print('Sent ',repr(l))
+                    l = f.read(
+                        BUFFER_SIZE)  # having a second buffer allows the thread to read from two different buffers to inrease transfer speed
+                if not l:
+                    f.close()  # Closes the file and its availablility
+                    self.sock.close()  # closes the socket
+                    break
+        else:
+            message = struct.unpack('hhhhhh', request)
+            playerList = []
+            amount = 0
+            while amount < 6:
+                playerList.append(message[amount: amount + 2])
+                amount += 2
+            print(playerList)
 
 
 # create a stream socket and bind it
