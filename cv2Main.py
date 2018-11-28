@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 from skimage import exposure
 
+import alexandria as al
+
 
 def mean_squared_error(imageA, imageB):
     # the 'Mean Squared Error' between the two images is the
@@ -160,6 +162,18 @@ def findSquares(image):
 
 cap = cv2.VideoCapture(0)
 RUNNING = True
+
+one = al.Pos(0, 0)
+two = al.Pos(0, 0)
+three = al.Pos(0, 0)
+playerList = [one, two, three]
+
+templates = []
+for i in range(0, 3):
+    template = cv2.imread('temp%s.jpg' % i, 0)
+    print("read: temp%s.jpg" % i)
+    templates.append(template)
+
 while RUNNING:
     # https://www.pyimagesearch.com/2014/05/05/building-pokedex-python-opencv-perspective-warping-step-5-6/
     # https://www.pyimagesearch.com/2014/04/21/building-pokedex-python-finding-game-boy-screen-step-4-6/
@@ -169,21 +183,20 @@ while RUNNING:
     warps, conts = findSquares(image)
     drawn = resize(image, height=300)
     temp_match_arr = []
+    posList = []
     for wa in warps:
         c = conts[wasps]
         wasps += 1
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(drawn, (x, y), (x + w, y + h), (0, 255, 0), 2)
         temp_match_arr.append(wa)
+        center = al.Pos(x + (w / 2), y + (h / 2))
+        posList.append(center)
 
-    templates = []
-    for i in range(0, 3):
-        template = cv2.imread('temp%s.jpg' % i, 0)
-        print("read: temp%s.jpg" % i)
-        templates.append(template)
     t = -1
     for template in templates:
         t += 1
+        ma = -1
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
@@ -192,6 +205,10 @@ while RUNNING:
                 dst = cv2.warpAffine(img, M, (cols, rows))
                 if mean_squared_error(dst, template) < 10000:  # TODO: fine tune me
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
+                    playerList[t] = posList[ma]
+            ma += 1
+    for pc in playerList:
+        print(pc.place())
     cv2.imshow("Ay", drawn)
     cv2.waitKey(0)
 
