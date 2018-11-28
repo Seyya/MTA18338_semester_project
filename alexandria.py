@@ -10,8 +10,8 @@ class Pos:
     y = 0
 
     def __init__(self, x, y):  # swapping these breaks
-        self.x = x
-        self.y = y
+        self.x = int(x)
+        self.y = int(y)
 
     def place(self):
         return self.y, self.x  # swapped to conform with python/cv2

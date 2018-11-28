@@ -197,7 +197,7 @@ while RUNNING:
     t = -1
     for template in templates:
         t += 1
-        ma = -1
+        ma = 0
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
@@ -208,8 +208,9 @@ while RUNNING:
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
                     playerList[t] = posList[ma]
             ma += 1
+
     Client.send_pos(playerList)
-    bg_ch = True  # send this as a message from server ("hey i updated map fu") Should prolly run once regardless
+    bg_ch = False  # send this as a message from server ("hey i updated map fu") Should prolly run once regardless
     if bg_ch:
         cv2.imshow("Background", Client.recieve_bg())
         print("Background recieved from server")
