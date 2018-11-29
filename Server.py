@@ -1,6 +1,7 @@
 import socket
 import struct
 from threading import Thread
+import cv2
 
 IP = str(socket.gethostbyname(socket.gethostname()))    # the ip of the server (localhost = your own ip)
 PORT = 9001         # the port of the server
@@ -22,7 +23,7 @@ class ClientThread(Thread):                                     # makes the clas
         if len(request) == 1:
             i_am_sending = struct.unpack('?', request)
         if i_am_sending:
-            filename = 'farmhouse-ground-floor.jpg'  # initializing variable with an image
+            filename = 'farmhouse-ground-floor2.jpg'  # initializing variable with an image
             f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
             while True:
                 l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)
@@ -43,6 +44,12 @@ class ClientThread(Thread):                                     # makes the clas
                 playerList.append(message[amount: amount + 2])
                 amount += 2
             print(playerList)
+            img = cv2.imread('farmhouse-ground-floor.jpg')
+            img_copy = img.copy()
+            cv2.imshow('copy', img_copy)
+            for pc in playerList:
+                cv2.circle(img_copy, (pc[0]*5, pc[1]*3), 50, (255, 0, 0), -1)
+            cv2.imwrite('farmhouse-ground-floor2.jpg', img_copy)
 
 
 # create a stream socket and bind it

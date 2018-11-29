@@ -97,6 +97,7 @@ while playing:  # while True, should come with some exit statement in final edit
             p = int(y + (h / 2))
             fonts.append((q, p))  # add the position of centers for each contours to "fonts"
             cp = playertokens[dd]  # current player
+
             if len(donts) == len(playertokens):  # if the amount of contours found is equal to the amount of players
                 if movement_detected is False:  # and no movement has been detected
                     if cp.pos == (0, 0):  # why is blue never true (translated: shit doesn't work for some reason)
@@ -143,7 +144,7 @@ while playing:  # while True, should come with some exit statement in final edit
     #                        token.pos = fcop[0]
 
     # Display frame
-    #  cv2.imshow('Thrash', thresh)
+    cv2.imshow('Thrash', thresh)
     #  cv2.imshow('Delta', frameDelta)
     cv2.imshow('First Frame', firstFrame)  # show old shit
     cv2.imshow('Frame', frame)  # show new shit

@@ -65,8 +65,9 @@ def findSquares(image):
 
     # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.bilateralFilter(gray, 11, 17, 17)
-    edged = cv2.Canny(gray, 30, 200)
+    # gray = cv2.bilateralFilter(gray, 11, 17, 17)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(gray, 100, 250)
     # find contours in the edged image, keep only the largest
     # ones, and initialize our screen contour
     im2, contours, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -168,6 +169,7 @@ one = al.Pos(30000, 30000)
 two = al.Pos(100, 100)
 three = al.Pos(20, 20)
 playerList = [one, two, three]
+framedelay = 0
 
 templates = []
 for i in range(0, 3):
@@ -197,7 +199,7 @@ while RUNNING:
     t = -1
     for template in templates:
         t += 1
-        ma = -1
+        ma = 0
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
@@ -208,15 +210,22 @@ while RUNNING:
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
                     playerList[t] = posList[ma]
             ma += 1
-    Client.send_pos(playerList)
-    bg_ch = True  # send this as a message from server ("hey i updated map fu") Should prolly run once regardless
+    if framedelay > 300:
+        Client.send_pos(playerList)
+        framedelay = 0
+
+    else:
+        framedelay += 1
+    bg_ch = False  # send this as a message from server ("hey i updated map") Should probably run once regardless
     if bg_ch:
         cv2.imshow("Background", Client.recieve_bg())
         print("Background recieved from server")
     cv2.imshow("Ay", drawn)
-    cv2.waitKey(0)
+    woo = cv2.imread('farmhouse-ground-floor2.jpg')
+    cv2.imshow('wooo', woo)
+    cv2.waitKey(1)
 
 # show our images
 
 # cv2.imshow("edge", edged)
-cv2.waitKey(0)
+cv2.waitKey(1)

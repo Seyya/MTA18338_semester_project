@@ -10,8 +10,8 @@ class Pos:
     y = 0
 
     def __init__(self, x, y):  # swapping these breaks
-        self.x = x
-        self.y = y
+        self.x = int(x)
+        self.y = int(y)
 
     def place(self):
         return self.y, self.x  # swapped to conform with python/cv2
@@ -27,6 +27,10 @@ class Pos:
     def __eq__(self, b):
         a = self
         return a.x == b.x and a.y == b.y
+
+    def __mul__(self, b):
+        a = self
+        return Pos(a.x * b, a.y * b)
 
     # def __ne__(self, b):  # apparently only necessary in python 2 and not 3
     #     a = self
