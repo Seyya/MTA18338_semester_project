@@ -67,7 +67,7 @@ def findSquares(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # gray = cv2.bilateralFilter(gray, 11, 17, 17)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(gray, 100, 250)
+    edged = cv2.Canny(gray, 75, 400)
     # find contours in the edged image, keep only the largest
     # ones, and initialize our screen contour
     im2, contours, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -80,7 +80,7 @@ def findSquares(image):
     conts = []
     theonecont = False  # fixes contour duplicates
     for c in contours:
-        if cv2.contourArea(c) < 50:  # if the contour is too small, ignore it #TODO change me
+        if cv2.contourArea(c) < 25:  # if the contour is too small, ignore it #TODO change me
             continue
         # approximate the contour
         peri = cv2.arcLength(c, True)
@@ -164,15 +164,16 @@ def findSquares(image):
 
 cap = cv2.VideoCapture(0)
 RUNNING = True
-
-one = al.Pos(30000, 30000)
-two = al.Pos(100, 100)
-three = al.Pos(20, 20)
-playerList = [one, two, three]
+#Add new position object to track more templates and in playerList
+one = al.Pos(0, 0)
+two = al.Pos(0, 0)
+three = al.Pos(0, 0)
+four = al.Pos(0,0)
+playerList = [one, two, three, four]
 framedelay = 0
-
+wooCounter = 0
 templates = []
-for i in range(0, 3):
+for i in range(0, 4): #increase with x-amount of templates to make sure it reads the templates
     template = cv2.imread('temp%s.jpg' % i, 0)
     print("read: temp%s.jpg" % i)
     templates.append(template)
@@ -203,16 +204,18 @@ while RUNNING:
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
-            for i in range(0, 4):
+            for i in range(0, 5): #increase loop with x-amount of templates
                 M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90 * i, 1)
                 dst = cv2.warpAffine(img, M, (cols, rows))
-                if mean_squared_error(dst, template) < 10000:  # TODO: fine tune me
+                if mean_squared_error(dst, template) < 5000:  # TODO: fine tune me
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
                     playerList[t] = posList[ma]
+
             ma += 1
-    if framedelay > 300:
+    if framedelay > 30:
         Client.send_pos(playerList)
         framedelay = 0
+        wooCounter += 1
 
     else:
         framedelay += 1
@@ -221,8 +224,13 @@ while RUNNING:
         cv2.imshow("Background", Client.recieve_bg())
         print("Background recieved from server")
     cv2.imshow("Ay", drawn)
-    woo = cv2.imread('farmhouse-ground-floor2.jpg')
-    cv2.imshow('wooo', woo)
+    if wooCounter >= 1:
+        try:
+            woo = cv2.imread('farmhouse-ground-floor2.jpg')
+            cv2.namedWindow('wooo', cv2.WINDOW_NORMAL)
+            cv2.imshow('wooo', woo)
+        except AssertionError:
+            print('assertion error')
     cv2.waitKey(1)
 
 # show our images

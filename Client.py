@@ -4,7 +4,7 @@ import struct
 import cv2
 
 # IP = input('Enter the IP Address::')  # connects to localhost (your own pc)
-IP = "172.24.222.5"
+IP = "172.24.218.87"
 PORT = 9001  # the port to conect to
 BUFFER_SIZE = 1024
 
