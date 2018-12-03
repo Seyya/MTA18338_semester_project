@@ -37,7 +37,7 @@ class ClientThread(Thread):                                     # makes the clas
                     self.sock.close()  # closes the socket
                     break
         else:
-            message = struct.unpack('hhhhhhhh', request) #increase amount of h by 2 for each template
+            message = struct.unpack('hhhhhhhhhhhhhh', request) #increase amount of h by 2 for each template
             playerList = []
             amount = 0
             while amount < 8:

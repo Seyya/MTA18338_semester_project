@@ -169,11 +169,15 @@ one = al.Pos(0, 0)
 two = al.Pos(0, 0)
 three = al.Pos(0, 0)
 four = al.Pos(0,0)
-playerList = [one, two, three, four]
+five = al.Pos(0,0)
+six = al.Pos(0,0)
+seven = al.Pos(0,0)
+
+playerList = [one, two, three, four, five, six, seven]
 framedelay = 0
-wooCounter = 0
+backgroundCounter = 0
 templates = []
-for i in range(0, 4): #increase with x-amount of templates to make sure it reads the templates
+for i in range(0, 7): #increase with x-amount of templates to make sure it reads the templates
     template = cv2.imread('temp%s.jpg' % i, 0)
     print("read: temp%s.jpg" % i)
     templates.append(template)
@@ -204,10 +208,10 @@ while RUNNING:
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
-            for i in range(0, 5): #increase loop with x-amount of templates
+            for i in range(0, 8): #increase loop with x-amount of templates +1
                 M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90 * i, 1)
                 dst = cv2.warpAffine(img, M, (cols, rows))
-                if mean_squared_error(dst, template) < 5000:  # TODO: fine tune me
+                if mean_squared_error(dst, template) < 6500:  # TODO: fine tune me
                     cv2.imshow("Found: " + str(t), resize(img, height=300))
                     playerList[t] = posList[ma]
 
@@ -215,7 +219,7 @@ while RUNNING:
     if framedelay > 30:
         Client.send_pos(playerList)
         framedelay = 0
-        wooCounter += 1
+        backgroundCounter += 1
 
     else:
         framedelay += 1
@@ -224,11 +228,11 @@ while RUNNING:
         cv2.imshow("Background", Client.recieve_bg())
         print("Background recieved from server")
     cv2.imshow("Ay", drawn)
-    if wooCounter >= 1:
+    if backgroundCounter >= 1:
         try:
-            woo = cv2.imread('farmhouse-ground-floor2.jpg')
-            cv2.namedWindow('wooo', cv2.WINDOW_NORMAL)
-            cv2.imshow('wooo', woo)
+            background = cv2.imread('farmhouse-ground-floor2.jpg')
+            cv2.namedWindow('background', cv2.WINDOW_NORMAL)
+            cv2.imshow('background', background)
         except AssertionError:
             print('assertion error')
     cv2.waitKey(1)
