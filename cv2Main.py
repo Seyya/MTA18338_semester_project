@@ -177,6 +177,8 @@ playerList = [one, two, three, four, five, six, seven]
 framedelay = 0
 backgroundCounter = 0
 templates = []
+
+
 for i in range(0, 7): #increase with x-amount of templates to make sure it reads the templates
     template = cv2.imread('temp%s.jpg' % i, 0)
     print("read: temp%s.jpg" % i)
