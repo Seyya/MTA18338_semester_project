@@ -40,7 +40,7 @@ class ClientThread(Thread):                                     # makes the clas
             message = struct.unpack('hhhhhhhhhhhhhh', request) #increase amount of h by 2 for each template
             playerList = []
             amount = 0
-            while amount < 8:
+            while amount < 14:  #remember to change to amount of h
                 playerList.append(message[amount: amount + 2])
                 amount += 2
             print(playerList)

@@ -168,10 +168,10 @@ RUNNING = True
 one = al.Pos(0, 0)
 two = al.Pos(0, 0)
 three = al.Pos(0, 0)
-four = al.Pos(0,0)
-five = al.Pos(0,0)
-six = al.Pos(0,0)
-seven = al.Pos(0,0)
+four = al.Pos(0, 0)
+five = al.Pos(0, 0)
+six = al.Pos(0, 0)
+seven = al.Pos(0, 0)
 
 playerList = [one, two, three, four, five, six, seven]
 framedelay = 0
