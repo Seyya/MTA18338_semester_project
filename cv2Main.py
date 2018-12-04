@@ -220,6 +220,9 @@ while RUNNING:
             ma += 1
     if framedelay > 30:
         Client.send_pos(playerList)
+        for derp in range(0, len(playerList)):
+            playerList[derp].x = 0
+            playerList[derp].y = 0
         framedelay = 0
         backgroundCounter += 1
 
