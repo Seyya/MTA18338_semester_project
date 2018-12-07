@@ -422,7 +422,7 @@ def find_corners(outline):  # corners matter, but not their individuality. No ne
     return [topright, topleft, bottomright, bottomleft]
 
 
-def detect_lines(img):
+def sobel_operator(img):
     height, width = img.shape
     newimg = np.zeros((height, width), np.uint8)
     kernelx = [0] * 9  # g_x
