@@ -6,6 +6,7 @@ from skimage import exposure
 import Client
 import alexandria as al
 
+
 def findSquares(image):
     # ratio = image.shape[0] / 300.0
     # dim = int(image.shape[1] / ratio), 300
@@ -105,14 +106,6 @@ def findSquares(image):
             else:
                 theonecont = True
     return warps, conts
-    # the pokemon we want to identify will be in the top-right
-    # corner of the warped image -- let's crop this region out
-    #    (h, w) = warp.shape
-    #    (dX, dY) = (int(w * 0.4), int(h * 0.45))
-    #    crop = warp[10:dY, w - dX:w - 10]
-
-    # save the cropped image to file
-    # cv2.imwrite("cropped.png", crop)
 
 
 cap = cv2.VideoCapture(0)

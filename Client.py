@@ -3,8 +3,8 @@ import struct
 
 import cv2
 
-# IP = input('Enter the IP Address::')  # connects to localhost (your own pc)
-IP = "172.24.216.143"
+IP = input('Enter the IP Address::')  # connects to localhost (your own pc)
+# IP = "172.24.218.155"  # for manually inputting IP
 PORT = 9001  # the port to conect to
 BUFFER_SIZE = 1024
 

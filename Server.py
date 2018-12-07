@@ -1,6 +1,7 @@
 import socket
 import struct
 from threading import Thread
+
 import cv2
 
 IP = str(socket.gethostbyname(socket.gethostname()))    # the ip of the server (localhost = your own ip)
@@ -47,8 +48,11 @@ class ClientThread(Thread):                                     # makes the clas
             img = cv2.imread('perfect_Ratio.jpg')
             img_copy = img.copy()
             cv2.imshow('copy', img_copy)
+            pc_colours = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (127, 127, 0), (0, 127, 127), (127, 0, 127), (2, 2, 2)]
+            cc = 0
             for pc in playerList:
-                cv2.circle(img_copy, (pc[0]*2, pc[1]*2), 25, (255, 0, 0), -1)
+                cv2.circle(img_copy, (pc[0] * 2, pc[1] * 2), 25, pc_colours[cc], -1)
+                cc += 1
             cv2.imwrite('farmhouse-ground-floor2.jpg', img_copy)
 
 
