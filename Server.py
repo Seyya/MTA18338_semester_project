@@ -54,6 +54,7 @@ class ClientThread(Thread):                                     # makes the clas
 
 
 
+
 # create a stream socket and bind it
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   # Creates a socket for IPv4 addresses with TCP
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # To set options at a socket level, makes the socket use itself and reuse its address

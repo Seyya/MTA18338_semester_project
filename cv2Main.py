@@ -6,53 +6,6 @@ from skimage import exposure
 import Client
 import alexandria as al
 
-
-def mean_squared_error(imageA, imageB):
-    # the 'Mean Squared Error' between the two images is the
-    # sum of the squared difference between the two images;
-    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
-    err /= float(imageA.shape[0] * imageA.shape[1])
-
-    # return the MSE, the lower the error, the more "similar"
-    # the two images are
-    return err
-
-
-# this code section is straight up copy pasted from the library imutils bc i cant import it and it does some kind of
-# magic that cannot be recreated
-# TODO make function our own/incorporate into own code and/or move to alexandria
-def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
-    # initialize the dimensions of the image to be resized and
-    # grab the image size
-    dim = None
-    (h, w) = image.shape[:2]
-
-    # if both the width and height are None, then return the
-    # original image
-    if width is None and height is None:
-        return image
-
-    # check to see if the width is None
-    if width is None:
-        # calculate the ratio of the height and construct the
-        # dimensions
-        r = height / float(h)
-        dim = (int(w * r), height)
-
-    # otherwise, the height is None
-    else:
-        # calculate the ratio of the width and construct the
-        # dimensions
-        r = width / float(w)
-        dim = (width, int(h * r))
-
-    # resize the image
-    resized = cv2.resize(image, dim, interpolation=inter)
-
-    # return the resized image
-    return resized
-
-
 def findSquares(image):
     # ratio = image.shape[0] / 300.0
     # dim = int(image.shape[1] / ratio), 300
@@ -61,7 +14,7 @@ def findSquares(image):
 
     ratio = image.shape[0] / 300.0
     orig = image.copy()
-    image = resize(image, height=300)
+    image = al.resize(image, height=300)
 
     # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -191,7 +144,7 @@ while RUNNING:
     # image = cv2.imread("phone_test.jpg")
     wasps = 0
     warps, conts = findSquares(image)
-    drawn = resize(image, height=300)
+    drawn = al.resize(image, height=300)
     temp_match_arr = []
     posList = []
     for wa in warps:
@@ -213,8 +166,8 @@ while RUNNING:
             for i in range(0, 8): #increase loop with x-amount of templates +1
                 M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90 * i, 1)
                 dst = cv2.warpAffine(img, M, (cols, rows))
-                if mean_squared_error(dst, template) < 6500:  # TODO: fine tune me
-                    cv2.imshow("Found: " + str(t), resize(img, height=300))
+                if al.meanSquaredError(dst, template) < 6500:  # TODO: fine tune me
+                    cv2.imshow("Found: " + str(t), al.resize(img, height=300))
                     playerList[t] = posList[ma]
 
             ma += 1
