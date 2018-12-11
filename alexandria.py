@@ -52,7 +52,7 @@ class Pos:
         return res
 
 
-def cwoffset(point):  # check here  first for erros
+def cwoffset(point):  # check here first for errors
     switcher = {
         Pos(1, 0): Pos(1, -1),
         Pos(1, -1): Pos(0, -1),
@@ -199,8 +199,8 @@ def binary_threshold(img, threshold):
 
 
 def adaptive_thresholding(img):
-    #original code w farmhouse resized to 200x200:
-    img = cv2.resize(img, (200, 200))   # brug resize hvis billedet er større end 500x500
+    # original code w farmhouse resized to 200x200:
+    img = cv2.resize(img, (200, 200))  # brug resize hvis billedet er større end 500x500
     height, width = img.shape
     img_out = img.copy()
 
