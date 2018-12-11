@@ -1,0 +1,18 @@
+Contribution by group members
+Group MTA18338
+Programming of Complex Software Systems
+
+Contribution by Alina Schmidt:
+Helped with information gathering, troubleshooting and helped build initial startup of the server/client system
+
+Contribution by Christian Bodskov:
+Fixed problem of sending coordinates
+
+Contribution by Lærke Øvlisen:
+Nothing, makes her own miniproject
+
+Contribution by Martin Møller:
+Worked on modifying code for sending images by converting images to bytes and back
+
+Contribution by Martin Sørensen:
+Startup of miniproject, built skeleton of server/client structure and built for binary transfer
