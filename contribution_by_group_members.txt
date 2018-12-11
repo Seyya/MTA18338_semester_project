@@ -6,13 +6,15 @@ Contribution by Alina Schmidt:
 Helped with information gathering, troubleshooting and helped build initial startup of the server/client system
 
 Contribution by Christian Bodskov:
-Fixed problem of sending coordinates
+Fixed problems of sending coordinates and other simple information using struct library.
 
-Contribution by Lærke Øvlisen:
+Contribution by LÃ¦rke Ã˜vlisen:
 Nothing, makes her own miniproject
 
-Contribution by Martin Møller:
+Contribution by Martin MÃ¸ller:
 Worked on modifying code for sending images by converting images to bytes and back
 
-Contribution by Martin Sørensen:
+Contribution by Martin SÃ¸rensen:
 Startup of miniproject, built skeleton of server/client structure and built for binary transfer
+
+All group members made a functional version of a one way communication system with thread-handling. The best version was chosen and improved upon by salvaging the other member's versions.
