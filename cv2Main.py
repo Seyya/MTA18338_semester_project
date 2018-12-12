@@ -7,7 +7,8 @@ from skimage import exposure
 import alexandria as al
 import sys
 
-
+sys.path.append('C:/Users/Bruger/Documents/GitHub/P3_semester_projects/Client')
+import Client
 
 
 def findSquares(image):
@@ -135,13 +136,13 @@ for i in range(0, 7): #increase with x-amount of templates to make sure it reads
 
 while RUNNING:
 
-    sys.path.append('C:/Users/Bruger/Documents/GitHub/P3_semester_projects/Client')
 
-    import Client
+
     # https://www.pyimagesearch.com/2014/05/05/building-pokedex-python-opencv-perspective-warping-step-5-6/
     # https://www.pyimagesearch.com/2014/04/21/building-pokedex-python-finding-game-boy-screen-step-4-6/
     ret, image = cap.read()
     # image = cv2.imread("phone_test.jpg")
+    cv2.imshow('camera', image)
     wasps = 0
     warps, conts = findSquares(image)
     drawn = al.resize(image, height=300)
@@ -188,7 +189,7 @@ while RUNNING:
     cv2.imshow("Ay", drawn)
     if backgroundCounter >= 1:
         try:
-            background = cv2.imread('Server/farmhouse-ground-floor2.jpg')
+            background = cv2.imread('Maps/map_with_players.jpg')
             cv2.namedWindow('background', cv2.WINDOW_NORMAL)
             cv2.imshow('background', background)
         except AssertionError:

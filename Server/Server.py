@@ -24,7 +24,7 @@ class ClientThread(Thread):                                     # makes the clas
         if len(request) == 1:
             i_am_sending = struct.unpack('?', request)
         if i_am_sending:
-            filename = 'perfect_ratio.jpg'  # initializing variable with an image
+            filename = 'maps/perfect_Ratio_map.jpg'  # initializing variable with an image
             f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
             while True:
                 l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)
@@ -45,15 +45,19 @@ class ClientThread(Thread):                                     # makes the clas
                 playerList.append(message[amount: amount + 2])
                 amount += 2
             print(playerList)
-            img = cv2.imread('perfect_Ratio.jpg')
+            img = cv2.imread('../Maps/perfect_ratio_map.jpg')
             img_copy = img.copy()
             cv2.imshow('copy', img_copy)
             pc_colours = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (127, 127, 0), (0, 127, 127), (127, 0, 127), (2, 2, 2)]
             cc = 0
             for pc in playerList:
-                cv2.circle(img_copy, (pc[0] * 2, pc[1] * 2), 25, pc_colours[cc], -1)
-                cc += 1
-            cv2.imwrite('farmhouse-ground-floor2.jpg', img_copy)
+                if pc[0] != 0 and pc[1] != 0:
+                    cv2.circle(img_copy, (pc[0] * 2 + 100, pc[1] * 2 + 100), 25, pc_colours[cc], -1)
+                    cc += 1
+                else:
+                    cv2.circle(img_copy, (pc[0], pc[1]), 25, pc_colours[cc], -1)
+                    cc += 1
+            cv2.imwrite('../Maps/map_with_players.jpg', img_copy)
 
 
 
