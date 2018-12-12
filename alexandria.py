@@ -88,8 +88,10 @@ def boundary_box(outline, src, tempi, bo, nond):
     y = min(yarray)
     l = max(yarray)
     b = max(xarray)
-    #   if bo is True:
-    #       cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
+
+    # if bo is True:
+    #     cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
+
     tempi = delete_old_conts(x, y, l, b, tempi, nond)
     return tempi
 
