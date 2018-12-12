@@ -3,8 +3,11 @@ import cv2
 import numpy as np
 from skimage import exposure
 
-import Client
+#import Client
 import alexandria as al
+import sys
+
+
 
 
 def findSquares(image):
@@ -126,11 +129,15 @@ templates = []
 
 
 for i in range(0, 7): #increase with x-amount of templates to make sure it reads the templates
-    template = cv2.imread('temp%s.jpg' % i, 0)
+    template = cv2.imread('Templates/temp%s.jpg' % i, 0)
     print("read: temp%s.jpg" % i)
     templates.append(template)
 
 while RUNNING:
+
+    sys.path.append('C:/Users/Bruger/Documents/GitHub/P3_semester_projects/Client')
+
+    import Client
     # https://www.pyimagesearch.com/2014/05/05/building-pokedex-python-opencv-perspective-warping-step-5-6/
     # https://www.pyimagesearch.com/2014/04/21/building-pokedex-python-finding-game-boy-screen-step-4-6/
     ret, image = cap.read()
@@ -181,7 +188,7 @@ while RUNNING:
     cv2.imshow("Ay", drawn)
     if backgroundCounter >= 1:
         try:
-            background = cv2.imread('farmhouse-ground-floor2.jpg')
+            background = cv2.imread('Server/farmhouse-ground-floor2.jpg')
             cv2.namedWindow('background', cv2.WINDOW_NORMAL)
             cv2.imshow('background', background)
         except AssertionError:
