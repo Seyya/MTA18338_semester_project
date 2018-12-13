@@ -78,7 +78,7 @@ def clockwise(target, prev):
 
 
 # Function that will delete contours that has already been detected and stored, afterwards it returns
-# the new image. This makes sure contouring can find more than one contour in an image
+# the new image. This makes sure contouring can find more than one contour in an image, not the same
 def delete_old_conts(x, y, l, b, tempi, nond):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
@@ -91,17 +91,17 @@ def boundary_box(outline, src, tempi, bo, nond):
     #Stores all x and y coordinates
     xarray = []
     yarray = []
-    #Add all x and y coordinates from "outline"
+    # Add all x and y coordinates from "outline"
     for j in outline:
         yarray.append(j.x)
         xarray.append(j.y)
-    #initialize variales with highest and loweset values in order to make a box from the coordinates
+    # initialize variales with highest and loweset values in order to make a box from the coordinates
     x = min(xarray)
     y = min(yarray)
     l = max(yarray)
     b = max(xarray)
 
-    # When outcommented it will draw a box with the given coordinates
+    # When not commented out it will draw a box with the given coordinates
     # if bo is True:
     #     cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
 
@@ -109,7 +109,6 @@ def boundary_box(outline, src, tempi, bo, nond):
     return tempi
 
 
-# our lord and savior: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
 # Function that does contouring on an image, finds the outline of an object on an image, only works on binary image
 def contouring(img, detected):
     #Variable that allows for finding a black or white object depending on your binary thresholding
