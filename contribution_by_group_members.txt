@@ -3,7 +3,7 @@ Group MTA18338
 Programming of Complex Software Systems
 
 Contribution by Alina Schmidt:
-Helped with information gathering, troubleshooting and helped build initial startup of the server/client system
+Helped with information gathering and helped build initial startup of the server/client system
 
 Contribution by Christian Bodskov:
 Fixed problems of sending coordinates and other simple information using struct library.
