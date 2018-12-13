@@ -1,14 +1,16 @@
+
 import math
 import time
-
 import cv2
 import numpy as np
 
 
 class Pos:
+    # Variables for x and y coordinates
     x = 0
     y = 0
 
+    # The init function is a constructor for Pos
     def __init__(self, x, y):  # swapping these breaks
         self.x = int(x)
         self.y = int(y)
@@ -16,6 +18,8 @@ class Pos:
     def place(self):
         return self.y, self.x  # swapped to conform with python/cv2
 
+    # All functions after this line are rules of arithmetic for the object
+    # e.g. how it should add coordinates together when adding two points
     def __add__(self, b):
         a = self
         return Pos(a.x + b.x, a.y + b.y)
@@ -53,6 +57,7 @@ class Pos:
 
 
 def cwoffset(point):  # check here first for errors
+    #Switch that creates a clockwise offset
     switcher = {
         Pos(1, 0): Pos(1, -1),
         Pos(1, -1): Pos(0, -1),
@@ -67,10 +72,13 @@ def cwoffset(point):  # check here first for errors
     return switcher.get(point)
 
 
+# Function that makes neighborhood processing go clockwise
 def clockwise(target, prev):
     return cwoffset(prev - target) + target
 
 
+# Function that will delete contours that has already been detected and stored, afterwards it returns
+# the new image. This makes sure contouring can find more than one contour in an image
 def delete_old_conts(x, y, l, b, tempi, nond):
     for k in range(y, l + 1):
         for g in range(x, b + 1):
@@ -78,17 +86,22 @@ def delete_old_conts(x, y, l, b, tempi, nond):
     return tempi
 
 
+# Function that draws a boundary box around an object by using a contour
 def boundary_box(outline, src, tempi, bo, nond):
+    #Stores all x and y coordinates
     xarray = []
     yarray = []
+    #Add all x and y coordinates from "outline"
     for j in outline:
         yarray.append(j.x)
         xarray.append(j.y)
+    #initialize variales with highest and loweset values in order to make a box from the coordinates
     x = min(xarray)
     y = min(yarray)
     l = max(yarray)
     b = max(xarray)
 
+    # When outcommented it will draw a box with the given coordinates
     # if bo is True:
     #     cv2.rectangle(src, (x, y), (b, l), 127, 2)  # black, remember to change
 
@@ -97,18 +110,21 @@ def boundary_box(outline, src, tempi, bo, nond):
 
 
 # our lord and savior: http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/moore.html
-
+# Function that does contouring on an image, finds the outline of an object on an image, only works on binary image
 def contouring(img, detected):
+    #Variable that allows for finding a black or white object depending on your binary thresholding
     notDetected = 255
     if detected == 255:
         notDetected = 0
-    # tempi = img.copy()
+
+    #initialize preliminary variables and functions to draw a rectangle
     h, w = img.shape
     cv2.rectangle(img, (0, 0), (h, w), notDetected, 2)
     tempi = np.ndarray.copy(img)
     tempo = []
     moreblacks = True
     while moreblacks:
+        #Initialize a bunch more variables, such as time, boolean and set variables
         start = time.time()
         end = time.time()
         onlyrealcontshavecurves = True
@@ -116,11 +132,13 @@ def contouring(img, detected):
         first = None
         outline = set()
         pixel_found = False
+        # Goes through the image in height direction first, if it finds a pixel of detected value (black or white)
+        # It will jump out of the loop. The same is the case for the width of the image
         for x in range(h):
-            # something possibly missing here. Just hope it gives no issues. (It does if a pixel is found in the first pixel checked)
             if pixel_found:
                 break
             for y in range(w):
+                # a pixel has same value of detected it will be stored as "first" and move onto next part of the code
                 if tempi[x, y] == detected:  # black, remember to change
                     first = Pos(x, y)
                     pixel_found = True
@@ -129,15 +147,23 @@ def contouring(img, detected):
         if first is None:
             moreblacks = False
 
+        # In case pixel_fonud is true this code will start running
         if pixel_found:
-            prev = firstprev  # I know. But fuck you python :)
+            # Initialize variables
+            prev = firstprev
             outline.add(first)
             boundary = first
+            # Curr variable makes sure the function goes clockwise in the object it is trying to make a contour of
             curr = clockwise(boundary, prev)
             blackmanspotted = 0
+
+            # As long as this statement is true it will run the code as it means the figure most be complete
+            # have to be adjusted depending on computer though as one of the conditions is time based
             while (
                     curr != first or prev != firstprev) and blackmanspotted <= 8 and end - start < 0.1:  # 0.04 - very much stc
                 end = time.time()
+                # If this statement is true it will add the pixel at x/y coordinates to the outline as it must
+                # be a part of the object
                 if w >= curr.y >= 0 and h >= curr.x >= 0 and tempi[
                     curr.x, curr.y] == detected:  # black, remember to change - also makes errors with frame sizes above 600?
                     outline.add(curr)
@@ -145,19 +171,25 @@ def contouring(img, detected):
                     boundary = curr
                     curr = clockwise(boundary, prev)
                     blackmanspotted = 0
+                # if it is not true it will check next pixel in clockwise order to see if it is true
                 else:
                     prev = curr
                     curr = clockwise(boundary, prev)
                     blackmanspotted += 1
+            # If it is not true 8 times it means the figure or object most be incomplete thus it is impossible
+            # to draw an outline around the object
             if blackmanspotted > 8:
                 print("Your figures are incomplete")
                 onlyrealcontshavecurves = False
+            # Runs the function boundary box with the values found, which allows to draw a box around the contour
             tempi = boundary_box(outline, img, tempi, onlyrealcontshavecurves, notDetected)
             tempo.append(outline)
     return tempo  # probably does not have to return img, so it has been removed temporarily
 
 
+# Function that takes out a sub image from an image to make a "Region of interest" (RoI)
 def roi_boi(outline, img):  # should be given the outlines given by the second output of contours (contours[1])
+    #Initialize variabls
     it = 0
     sub_images = []
     for i in range(len(outline)):  # outline contains multiple outlines (one set for each contour)
@@ -165,14 +197,17 @@ def roi_boi(outline, img):  # should be given the outlines given by the second o
         yarray = []
         # salasa = str(it)
         it += 1
+        # Get x and y coordinates from outline and store them in x and yarray
         for j in outline[i]:
             yarray.append(j.x)
             xarray.append(j.y)
+        # initialize variables with min and max values from the outline. basically the resolution/size of the iamge
         x = min(xarray)
         y = min(yarray)
         l = max(yarray)
         b = max(xarray)
 
+        # store the new sub image in "temp" variable
         temp = img[y:l, x:b]  # from min to max (min:max)
         sub_images.append(temp)
         # try:
@@ -182,10 +217,13 @@ def roi_boi(outline, img):  # should be given the outlines given by the second o
         return sub_images
 
 
+# Function that makes binary thresholding on a greyscale iamge
 def binary_threshold(img, threshold):
     # original code: 85.5 ns
     # original code w farmhouse img: 1.1 s
     # modified w farmhouse: 76.1 ms
+    # Go through the entire image and check the greyscale value if it higher or lower than the threshold
+    # it will be set to either black or white
     img[img > threshold] = 255
     img[img < threshold] = 0
     # h, w = img.shape
@@ -200,6 +238,7 @@ def binary_threshold(img, threshold):
     return img
 
 
+# Function that does binary thresholding by with the method of adaptive thresholding
 def adaptive_thresholding(img):
     # original code w farmhouse resized to 200x200:
     img = cv2.resize(img, (200, 200))  # brug resize hvis billedet er større end 500x500
@@ -227,9 +266,12 @@ def adaptive_thresholding(img):
     return adapt_thr
 
 
+# Function that oconverts a color image to greyscale
 def rgb2grey(img):
     # original code on farmhouse img: a long long long time
     # modified code -//-: 192 ms
+    # Goes through all pixels in the image and finds the average of the color pixel with a weight added
+    # The average is the new value of the pixel which will be a greyscale value
     grey_val = 0.07 * img[:, :, 2] + 0.72 * img[:, :, 1] + 0.21 * img[:, :, 0]
     grey_img = grey_val.astype(np.uint8)
     return grey_img
@@ -244,14 +286,18 @@ def rgb2grey(img):
     # cv2.imshow("gray", gray)
 
 
+# Function that does dilation in a binary image, increase the "white" of the image
 def dilate(img_arr, iteration):
+    #initialize variables
     h, w = img_arr.shape
     it = 0
     img_new = img_arr.copy()
     while it != iteration:
         print("Dilation iteration: " + str(it + 1))
+        #Goes through the entire image with an offset of 1 as it is using a 3x3 kernel
         for j in range(1, w - 1):
             for i in range(1, h - 1):
+                #Checks if the pixel is white, if it is it will set all pixels around it in a 3x3 kernel to white
                 if img_arr[i, j] == 255:
                     img_new[i - 1, j - 1] = 255
                     img_new[i - 1, j] = 255
@@ -266,14 +312,18 @@ def dilate(img_arr, iteration):
     return img_new
 
 
+# Function that does dilation in a binary image, increase the "black" of the image
 def erode(img_arr, iteration):
+    # initialize variables
     h, w = img_arr.shape
     it = 0
     img_new = img_arr.copy()
     while it != iteration:
         print("Erosion iteration: " + str(it + 1))
+        # Goes through the entire image with an offset of 1 as it is using a 3x3 kernel
         for j in range(1, w - 1):
             for i in range(1, h - 1):
+                # Checks if the pixel is black, if it is it will set all pixels around it in a 3x3 kernel to black
                 if img_arr[i, j] == 0:
                     img_new[i - 1, j - 1] = 0
                     img_new[i - 1, j] = 0
@@ -288,6 +338,7 @@ def erode(img_arr, iteration):
     return img_new
 
 
+# Function that applies gaussian blur to an image by using a 5x5 kernel
 def gaussblur(img):
     kernel = (1.0 / 57) * np.array(
         [[0, 1, 2, 1, 0],
@@ -300,20 +351,23 @@ def gaussblur(img):
     h, w = img.shape
     result = np.zeros(img.shape, dtype=np.uint8)
 
-    # compute everything!
+    # Goes through the image in x and y direction with an offset of 2 due to having a 5x5 kernel
     for sourceY in np.arange(2, h - 2):
         for sourceX in np.arange(2, w - 2):
             sub_result = 0.0
+            #Goes through the 5x5 kernel in x and y direction
             for kernelY in np.arange(-2, 3):
                 for kernelX in np.arange(-2, 3):
+                    #Compute the new value of the pixels
                     a = img.item(sourceY + kernelY, sourceX + kernelX)
                     p = kernel[2 + kernelY, 2 + kernelX]
                     sub_result = sub_result + (p * a)
             b = sub_result
+            #Applying the calculated result to the pixel
             result.itemset((sourceY, sourceX), b)
     return result
 
-
+# Function for the distance formula, finds the distance between two points
 def distance_finder(x1, y1, x2, y2):
     dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     return dist
@@ -336,7 +390,8 @@ def line_finder(x1, y1, x2, y2):
     return a, b, c
 
 
-# functions requires a list of Pos objects, and a user defined epsilon
+# functions requires a list of Pos objects, and a user defined epsilon, does not currently work properly but
+# the algorithm can be found at: https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm
 def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasPeucker  # 379, 44
     dmax = 0
     index = 0
@@ -375,7 +430,7 @@ def square_maker3000(pts, epsilon):  # or: approxPoly_lineShape or RamerDouglasP
     return result_list
 
 
-def order_list(alist):  # slow as fuck, but sorts perfectly (when in list format) #TODO optimize me
+def order_list(alist):  # pretty slow, but sorts perfectly (when in list format)
     i = 0
     again = True
     while again:
@@ -396,7 +451,9 @@ def order_list(alist):  # slow as fuck, but sorts perfectly (when in list format
     return alist  # return the sorted list
 
 
-def find_corners(outline):  # corners matter, but not their individuality. No need to preserve them
+# Function that find the corners from a given outline, topleft, -right, bottomleft and -right
+def find_corners(outline):
+    #Initialize a list that consist of outline, then sort the list to go from max to min values.
     setlist = list(outline)
     setlist = order_list(setlist)
     topright = Pos(setlist[0].x, setlist[0].y)  # right when rotated 45
@@ -404,7 +461,8 @@ def find_corners(outline):  # corners matter, but not their individuality. No ne
     bottomright = setlist[len(setlist) - 1]  # bot when roated 45
     bottomleft = Pos(setlist[0].x, setlist[0].y)
 
-    for o in setlist:  # might wanna tangle this into the pos object
+    # Using a loop to find the most topright and bottomleft values in "setlist"
+    for o in setlist:
         if o.y >= topright.y and o.x <= topright.x:
             topright.x = o.x
             topright.y = o.y
@@ -414,24 +472,29 @@ def find_corners(outline):  # corners matter, but not their individuality. No ne
 
     a = bottomleft.y + 1
     b = topleft.y
+    # In case bottomleft and topleft are on the same line it'll be sorted in the right order
     if a == b:
         bottomleft = Pos(setlist[0].x, setlist[0].y)
         for o in setlist:
             if o.y <= bottomleft.y:
                 bottomleft.x = o.x
                 bottomleft.y = o.y
-
+    # Return the four new points which are the corners of an object
     return [topright, topleft, bottomright, bottomleft]
 
 
+# Function for sobel edge detection on a binary image
 def sobel_operator(img):
+    #initialize variables
     height, width = img.shape
     newimg = np.zeros((height, width), np.uint8)
     kernelx = [0] * 9  # g_x
     kernely = [0] * 9  # g_y
 
+    #Following lines are loops that go through a 3x3 kernel in x and y direction with a weight added
     for j in range(1, width - 1):
         for i in range(1, height - 1):
+            #Get all the pixel values for each position in the kernel
             kernelx[0] = img[i - 1, j - 1] * -3
             kernelx[1] = img[i - 1, j] * 0
             kernelx[2] = img[i - 1, j + 1] * 3
@@ -442,6 +505,7 @@ def sobel_operator(img):
             kernelx[7] = img[i + 1, j] * 0
             kernelx[8] = img[i + 1, j + 1] * 3
 
+            # Adds all the pixel values together and find the average of the pixel values
             gx = sum(kernelx)
             kernelx_average = gx / 9
 
@@ -455,11 +519,13 @@ def sobel_operator(img):
             kernely[7] = img[i + 1, j] * 10
             kernely[8] = img[i + 1, j + 1] * 3
 
+            # Adds all the pixel values together and find the average of the pixel values
             gy = sum(kernely)
             kernely_average = gy / 9
             # g = math.sqrt(kernelx_average ** 2 + kernely_average ** 2)
             #            theta = (np.arctan(gy/gx))*180/math.pi
             #            if theta == 90 or theta == 0:
+            #Calculate the new value for the pixel by using the x and y kernel
             g = math.sqrt(kernelx_average ** 2 + kernely_average ** 2)
             #            else:
             #                g = 0
