@@ -1,12 +1,12 @@
-import cv2
-import numpy as np
 import math
 
-src_img = cv2.imread('test4.png', 0)
+import cv2
+
+src_img = cv2.imread('', 0)
 src_height = src_img.shape[0]
 src_width = src_img.shape[1]
 
-template_img = cv2.imread('test4_template.png', 0)
+template_img = cv2.imread('', 0)
 temp_height = template_img.shape[0]
 temp_width = template_img.shape[1]
 

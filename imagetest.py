@@ -2,8 +2,10 @@ import cv2
 
 import alexandria as al
 
-fuck = al.binary_threshold(al.rgb2grey(cv2.imread("test4_template_test.png")), 200)
+fuck = al.binary_threshold(al.rgb2grey(cv2.resize(cv2.imread("test.png"), (300, 300))), 100)
+cv2.imshow("bibo", fuck)
 conts = al.contouring(fuck, False)
+print(len(conts))
 
 for cunt in conts:
     csi = 0
