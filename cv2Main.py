@@ -7,8 +7,8 @@ from skimage import exposure
 import alexandria as al
 import sys
 
-sys.path.append('C:/Users/Bruger/Documents/GitHub/P3_semester_projects/Client')
-import Client
+sys.path.append('C:/Users/Bruger/Documents/GitHub/P3_semester_projects/Client') #This has to be change acoordingly to where you have the folder for the program
+import Client                                                                   #otherwise it is not able to load properly
 
 
 def findSquares(image):
