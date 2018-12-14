@@ -672,3 +672,37 @@ def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
 
     # return the resized image
     return resized
+
+
+# Template matching by using squared difference method.
+# Can't find templates at edges of the border 1 pixel offset needed
+def temp_matching(img, template):
+    srcH, srcW = img.shape[:2]
+    templateH, templateW = template.shape[:2]
+
+    # Loop that goes through the image in x and y direction
+    for i in range(0, srcH - 100):
+        for j in range(0, srcW - 100):
+            # Makes a new sub_images with the size of the template, makes it possible to make comparisons between
+            # the sub image and template
+            tempo_img = img[i:templateH + i, j:templateW + j]
+            pixels = (tempo_img.shape[0] * tempo_img.shape[1])
+
+            pix_sum = 0
+            for k in range(0, templateH):
+                for l in range(0, templateW):
+                    # Get the greyscale value for the pixel in template and tempo images
+                    tempo_pix = tempo_img[k, l]
+                    template_pix = template[k, l]
+
+                    # Calculations to find the squared difference
+                    subtract_pix = (tempo_pix - template_pix)
+                    pow_pix = math.pow(subtract_pix, 2)
+                    pix_sum = pix_sum + pow_pix
+            result = pix_sum / pixels
+            # If the result is within a certain threshold it will store the coordinates and draw a rectangle
+            if result < 5000:
+                print(result)
+                x = j
+                y = i
+                cv2.rectangle(img, (x, y), (x + templateH, y + templateW), 0, 2)
