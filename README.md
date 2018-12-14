@@ -10,10 +10,10 @@ The program works by loading the camera feed and then analyzing it using edge de
 
 # Instructions for running the program
 1. Run server.py
-2. Change directory in cv2Main.py on line 13 to where your client folder is located
+2. Change directory in cv2Main.py on line 13 to where your Client folder is located
 3. Run cv2Main.py
 4. Input server IP address in console (server.py gives IP address in console)
-5. Put marker in front of camera so it can detect an object (needs to be printed out first, can be found in templates)
+5. Put marker in front of camera so it can detect an object (needs to be printed out first, templates can be found in templates)
 
 ## For the *Programming of Complex Software Systems* Course
 The file *contribution_by_group_members.txt* references the server-client functionality.
