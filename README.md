@@ -16,4 +16,4 @@ The program works by loading the camera feed and then analyzing it using edge de
 5. Put marker in front of camera so it can detect an object (needs to be printed out first, templates can be found in templates)
 
 ## For the *Programming of Complex Software Systems* Course
-The file *contribution_by_group_members.txt* references the server-client functionality.
+The file *contribution_by_group_members.txt* references the server-client functionality and the file *link_to_github.txt* contains a link to the repository.
