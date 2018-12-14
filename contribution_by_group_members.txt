@@ -3,18 +3,18 @@ Group MTA18338
 Programming of Complex Software Systems
 
 Contribution by Alina Schmidt:
-Helped with information gathering and helped build initial startup of the server/client system
+Helped with information gathering and built the server
 
 Contribution by Christian Bodskov:
-Fixed problems of sending coordinates and other simple information using struct library.
+Built client, fixed problems of sending coordinates and other simple information using struct library
 
 Contribution by Lærke Øvlisen:
 Nothing, makes her own miniproject
 
 Contribution by Martin Møller:
-Worked on modifying code for sending images by converting images to bytes and back
+Worked on modifying code for sending images by converting images to bytes and back, built client
 
 Contribution by Martin Sørensen:
-Startup of miniproject, built skeleton of server/client structure and built for binary transfer
+Built skeleton of server structure and built for binary transfer
 
 All group members made a functional version of a one way communication system with thread-handling. The best version was chosen and improved upon by salvaging the other member's versions.
