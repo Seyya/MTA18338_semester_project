@@ -84,5 +84,8 @@ while True:
     print('Got connection from ', (ip, port))
     newthread = ClientThread(ip, port, conn)        # creates a new thread for the connected client
     newthread.start()                               # starts the new threads/clients activety
+    background = cv2.imread('../Maps/map_with_players.jpg')
+    cv2.imshow('background', background)
+    cv2.waitKey(1)
     threads.append(newthread)                       # adds newthreaad to a list
 
