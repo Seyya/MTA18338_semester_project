@@ -114,7 +114,7 @@ templates = []
 
 # loop through all templates found in the 'Templates' folder. Increases as more are added automatically
 dirsize = len(os.listdir('Templates'))
-for i in range(0, dirsize):
+for i in range(0, dirsize + 1):
     # template files must follow this naming convention, and a confirmation will be printed when a template is read
     template = cv2.imread('Templates/temp%s.jpg' % i, 0)
     print("read: temp%s.jpg" % i)
@@ -150,7 +150,7 @@ while RUNNING:
         for img in temp_match_arr:
             img = cv2.resize(img, (template.shape[1], template.shape[0]))
             rows, cols = img.shape
-            for i in range(0, dirsize + 1):
+            for i in range(0, 4):
                 M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90 * i, 1)
                 dst = cv2.warpAffine(img, M, (cols, rows))
                 if al.meanSquaredError(dst, template) < 6500:  # TODO: fine tune me

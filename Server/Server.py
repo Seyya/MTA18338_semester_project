@@ -17,7 +17,7 @@ class ClientThread(Thread):                                     # makes the clas
         self.ip = ip                                            # gets the ip from the client
         self.port = port                                        # gets the port from the client
         self.sock = sock
-        print(" New thread started for "+ip+":"+str(port))      # prints a string with the ip and port of the client
+        print("New thread started for " + ip + ":" + str(port))  # prints a string with the ip and port of the client
 
     def run(self):                                # Function for file transfer
         request = conn.recv(BUFFER_SIZE)
@@ -28,6 +28,7 @@ class ClientThread(Thread):                                     # makes the clas
         # if image request was given in the above line (True)
         if i_am_sending:
             filename = 'maps/perfect_Ratio_map.jpg'  # initializing variable with an image
+            cv2.imshow("background", filename)
             f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
             while True:
                 l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)
