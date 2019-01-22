@@ -170,7 +170,7 @@ while RUNNING:
 
     else:
         framedelay += 1
-    # bg_ch is currently hardcoded, but should be changed to be received from the server upon user request
+    # bg_ch is currently hardcoded, but should be changed to be received from the server upon user request (from DM)
     bg_ch = False  # send this as a message from server ("hey i updated map") Should probably run once regardless
     if bg_ch:  # if the request/variable is true: send the background and confirm the send
         cv2.imshow("Background", Client.recieve_bg())

@@ -27,8 +27,8 @@ class ClientThread(Thread):                                     # makes the clas
             i_am_sending = struct.unpack('?', request)
         # if image request was given in the above line (True)
         if i_am_sending:
-            filename = 'maps/perfect_Ratio_map.jpg'  # initializing variable with an image
-            cv2.imshow("background", filename)
+            filename = '../Maps/perfect_ratio_map.jpg'  # initializing variable with an image
+            cv2.imshow("background", cv2.imread(filename))
             f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
             while True:
                 l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)

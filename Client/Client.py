@@ -18,19 +18,19 @@ def recieve_bg():
     s.send(struct.pack('?', True))
     # save the image
     with open('received_file.jpg', 'wb') as f:  # change received_file to desired name of the file
-        print('file opened')
+        # print('file opened')
         while True:
             data = s.recv(BUFFER_SIZE)
-            print('data=%s', (data))
+            # print('data=%s', (data))
             if not data:
                 f.close()
-                print('file close()')
+                # print('file close()')
                 break
             # write image data to a file
             f.write(data)
 
     # print confirmation for a recieved file, close the socket and return the image to the function caller
-    print('Successfully get the file')
+    # print('Successfully get the file')
     s.close()
     img = cv2.imread("received_file.jpg")
     return img
