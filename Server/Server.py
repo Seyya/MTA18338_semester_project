@@ -32,7 +32,7 @@ class ClientThread(Thread):                                     # makes the clas
             f = open(filename, 'rb')  # Variable that checks if the file can be opened and read in a binary mode
             while True:
                 l = f.read(BUFFER_SIZE)  # Reads the image with a given buffer size (1024)
-                while (l):
+                while l:
                     self.sock.send(l)  # As long as l is true it sends the image
                     # A second buffer allows the thread to read from two different buffers to inrease transfer speed
                     l = f.read(BUFFER_SIZE)

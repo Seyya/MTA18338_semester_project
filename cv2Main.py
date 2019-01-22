@@ -177,14 +177,14 @@ while RUNNING:
         print("Background recieved from server")
     cv2.imshow("Ay", drawn)
     # if the pos has been sent, backgroundCounter == True, meaning a background will exist and the software won't crash
-    if backgroundCounter:
-        try:
+    # if backgroundCounter:
+    #     try:
             # read the recieved background and show it.
-            background = cv2.imread('Maps/map_with_players.jpg')
-            cv2.namedWindow('background', cv2.WINDOW_NORMAL)
-            cv2.imshow('background', background)
-        except AssertionError:
-            print('assertion error')
+    #        background = cv2.imread('Maps/map_with_players.jpg')
+    # cv2.namedWindow('background', cv2.WINDOW_NORMAL)
+    # cv2.imshow('background', background)
+    #    except AssertionError:
+    #        print('assertion error')
     cv2.waitKey(1)
 
 # show our images
